@@ -19,7 +19,7 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
     new_image->_height = height;
     new_image->_max_color_value = max_color_val <= 255 ? max_color_val : 255;
 
-    new_image->_pixels = malloc(sizeof(unsigned char) * (width * height));
+    new_image->_pixels = malloc(sizeof(unsigned char) * (width * height * 3));
 
     if(!new_image->_pixels) return 0;
 
@@ -28,6 +28,17 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
     if(!new_image->_image_file) return 0;
 
     return new_image;
+}
+
+void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, unsigned int red, unsigned int green, unsigned int blue)
+{
+    if(x > image->_width || y > image->_height) return;
+
+    red = red <= 255 ? red : 255;
+    green = green <= 255 ? green : 255;
+    blue = blue <= 255 ? blue : 255;
+
+    
 }
 
 int pixmap_image_get_width(PixMapImage *image)
