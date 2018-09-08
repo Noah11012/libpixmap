@@ -44,6 +44,7 @@ void pixmap_image_close(PixMapImage *image)
 {
     if(!image) return;
 
+    fclose(image->_image_file);
     free(image->_pixels);
     free(image);
 }
