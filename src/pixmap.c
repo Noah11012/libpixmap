@@ -1,4 +1,4 @@
-#include "ppm.h"
+#include "pixmap.h"
 
 struct _PixMapImage
 {
