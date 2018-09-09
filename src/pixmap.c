@@ -41,6 +41,7 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
 
     if(!new_image->_image_file)
     {
+        free(new_image->_pixels);
         free(new_image);
         return 0;
     }
@@ -87,6 +88,7 @@ PixMapImage *pixmap_image_open(char const *name)
     
     if(!new_image->_pixels)
     {
+        fclose(new_image->_image_file);
         free(new_image);
         return 0;
     }
