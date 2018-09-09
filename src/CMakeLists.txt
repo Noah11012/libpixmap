@@ -1,1 +1,1 @@
-add_library(libppmimage SHARED ppm.c)
+add_library(libpixmapimage SHARED pixmap.c)

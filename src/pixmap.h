@@ -2,11 +2,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 typedef struct _PixMapImage PixMapImage;
 
 
 PixMapImage *pixmap_image_new       (char const *name, int width, int height, int max_color_val);
+PixMapImage *pixmap_image_open      (char const *name);
 void         pixmap_image_set_pixel (PixMapImage *image,
                                      unsigned int x, unsigned int y,
                                      unsigned int red, unsigned int green, unsigned int blue);
