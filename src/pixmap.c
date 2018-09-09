@@ -90,29 +90,31 @@ void pixmap_image_save(PixMapImage *image)
     int i = 0;
     int w = 0;
     while(i < image->_width * image->_height * 3)
-    {
-        w++;
-        fprintf(image->_image_file, "%d %d %d ",
-                image->_pixels[i], image->_pixels[i + 1], image->_pixels[i + 2]);
-        
+    {        
         if(w == image->_width)
         {
+            fprintf(image->_image_file, "%d %d %d",
+                    image->_pixels[i], image->_pixels[i + 1], image->_pixels[i + 2]);
             fprintf(image->_image_file, "\n");
             w = 0;
+        } else {
+            fprintf(image->_image_file, "%d %d %d ",
+                    image->_pixels[i], image->_pixels[i + 1], image->_pixels[i + 2]);
         }
-        
+
+        w++;   
         i += 3;
     }
 }
 
 int pixmap_image_get_width(PixMapImage *image)
 {
-    return !image ? image->_width : -1;
+    return image->_width;
 }
 
 int pixmap_image_get_height(PixMapImage *image)
 {
-    return !image ? image->_height : -1;
+    return image->_height;
 }
 
 void pixmap_image_close(PixMapImage *image)
