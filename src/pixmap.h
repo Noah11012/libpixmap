@@ -10,6 +10,7 @@ PixMapImage *pixmap_image_new       (char const *name, int width, int height, in
 void         pixmap_image_set_pixel (PixMapImage *image,
                                      unsigned int x, unsigned int y,
                                      unsigned int red, unsigned int green, unsigned int blue);
+void         pixmap_image_save      (PixMapImage *image);
 int          pixmap_image_get_width (PixMapImage *image);
 int          pixmap_image_get_height(PixMapImage *image);
 void         pixmap_image_close     (PixMapImage *image);
