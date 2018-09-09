@@ -147,6 +147,11 @@ int pixmap_image_get_height(PixMapImage *image)
     return image->_height;
 }
 
+int pixmap_image_get_max_color_value(PixMapImage *image)
+{
+    return image->_max_color_value;
+}
+
 void pixmap_image_close(PixMapImage *image)
 {
     if(!image) return;

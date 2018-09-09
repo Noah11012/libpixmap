@@ -18,8 +18,9 @@ int main()
         }
     }
 
-    printf("Width: %d\nHeight: %d\n", pixmap_image_get_width(image),
-                                      pixmap_image_get_height(image));
+    printf("Width: %d\nHeight: %d\nMaximum color value: %d\n", pixmap_image_get_width(image),
+                                                               pixmap_image_get_height(image),
+                                                               pixmap_image_get_max_color_value(image));
 
     
 
@@ -34,7 +35,10 @@ int main()
         return 0;
     }
 
-    printf("Width: %d\nHeight: %d\n", pixmap_image_get_width(image2), pixmap_image_get_height(image2));
+    printf("Width: %d\nHeight: %d\nMaximum color value: %d\n",
+           pixmap_image_get_width(image2),
+           pixmap_image_get_height(image2),
+           pixmap_image_get_max_color_value(image2));
 
     pixmap_image_close(image2);
 }
