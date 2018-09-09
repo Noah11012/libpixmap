@@ -65,7 +65,7 @@ PixMapImage *pixmap_image_open(char const *name)
     unsigned char sig[3];
     fread(sig, sizeof(unsigned char), 2, new_image->_image_file);
 
-    if(!strcmp(sig, "P3")) return 0;
+    if(!(sig[0] == 'P' && sig[1] == '3')) return 0;
 
     int c;
     int comment = 0;
@@ -91,18 +91,9 @@ PixMapImage *pixmap_image_open(char const *name)
         return 0;
     }
 
-    int i = 0;
-    while((c = fgetc(new_image->_image_file)) != EOF)
-    {
-        int value = 0;
-        while(c != ' ')
-        {
-            value *= 10;
-            value += c;
-        }
+    // TODO: parse pixels into array
 
-        new_image->_pixels[i] = value;
-    }
+    return new_image;
 }
 
 void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, unsigned int red, unsigned int green, unsigned int blue)
@@ -126,11 +117,10 @@ void pixmap_image_save(PixMapImage *image)
     int w = 0;
     while(i < image->_width * image->_height * 3)
     {        
-        if(w == image->_width)
+        if(w > 2)
         {
-            fprintf(image->_image_file, "%d %d %d",
+            fprintf(image->_image_file, "%d %d %d\n",
                     image->_pixels[i], image->_pixels[i + 1], image->_pixels[i + 2]);
-            fprintf(image->_image_file, "\n");
             w = 0;
         } else {
             fprintf(image->_image_file, "%d %d %d ",
