@@ -114,7 +114,7 @@ void pixmap_image_save(PixMapImage *image)
     
     int i = 0;
     int w = 0;
-    while(i < image->_width * image->_height * 3)
+    while(i < image->_width * image->_height)
     {        
         if(w > 2)
         {
