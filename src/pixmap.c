@@ -94,9 +94,13 @@ PixMapImage *pixmap_image_open(char const *name)
     return new_image;
 }
 
-void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, unsigned int red, unsigned int green, unsigned int blue)
+void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, unsigned int red, unsigned int green, unsigned int blue, int *error)
 {
-    if(x > (image->_width - 1) || y > (image->_height - 1)) return;
+    if(x > (image->_width - 1) || y > (image->_height - 1))
+    {
+        if(error) *error = 1;
+        return;
+    }
 
     red = red <= 255 ? red : 255;
     green = green <= 255 ? green : 255;
