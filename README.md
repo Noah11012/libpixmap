@@ -34,6 +34,23 @@ If you want to change the install prefix, enter the following:
 
 `make`
 
+Because this library only contains a header and source file, you can simply include pixmap.h and add pixmap.c to the list of files needing to be built.
+
+Example:
+
+`clang -o program main.c another_file.c pixmap.c`
+
+In main.c:
+
+```c
+#include "pixmap.h"
+
+int main(int argc, char *argv[])
+{
+    ...
+}
+```
+
 ## Usage
 
 // Complete this section
