@@ -22,7 +22,14 @@ int main()
                                                                pixmap_image_get_height(image),
                                                                pixmap_image_get_max_color_value(image));
 
-    
+    RGB *color = pixmap_image_get_pixel(image, 0, 0);
+    printf("Color: %d %d %d\n", color->red, color->green, color->blue);
+
+    RGB *color2 = pixmap_image_get_pixel(image, 1, 1);
+    printf("Color: %d %d %d\n", color2->red, color2->green, color2->blue);
+
+    RGB *color3 = pixmap_image_get_pixel(image, 2, 2);
+    if(!color3) printf("Out of bounds!\n");
 
     pixmap_image_save(image);
     pixmap_image_close(image);

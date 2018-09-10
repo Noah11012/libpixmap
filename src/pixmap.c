@@ -1,12 +1,5 @@
 #include "pixmap.h"
 
-typedef struct _RGB
-{
-    unsigned int red;
-    unsigned int green;
-    unsigned int blue;
-} RGB;
-
 struct _PixMapImage
 {
     FILE *_image_file;
@@ -106,6 +99,13 @@ void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, 
     RGB color = { red, green, blue };
 
     image->_pixels[x + (y * image->_width)] = color;
+}
+
+RGB *pixmap_image_get_pixel(PixMapImage *image, unsigned int x, unsigned int y)
+{
+    if(x > (image->_width - 1) || y > (image->_height - 1)) return 0;
+
+    return &image->_pixels[x + (y * image->_width)];
 }
 
 void pixmap_image_save(PixMapImage *image)
