@@ -1,23 +1,20 @@
 #include "pixmap.h"
 
+typedef struct _RGB
+{
+    unsigned int red;
+    unsigned int green;
+    unsigned int blue;
+} RGB;
+
 struct _PixMapImage
 {
     FILE *_image_file;
     int _width;
     int _height;
-    unsigned char *_pixels;
+    RGB *_pixels;
     int _max_color_value;
 };
-
-void pixmap_print(PixMapImage *image)
-{
-    int i = 0;
-    while(i < image->_width * image->_height * 3)
-    {
-        printf("%u\n", image->_pixels[i]);
-        i++;
-    }
-}
 
 PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_color_val)
 {
@@ -29,7 +26,7 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
     new_image->_height = height;
     new_image->_max_color_value = max_color_val <= 255 ? max_color_val : 255;
 
-    new_image->_pixels = malloc(sizeof(unsigned char) * (width * height * 3));
+    new_image->_pixels = malloc(sizeof(RGB) * (new_image->_width * new_image->_height));
 
     if(!new_image->_pixels)
     {
@@ -84,7 +81,7 @@ PixMapImage *pixmap_image_open(char const *name)
         }
     }
 
-    new_image->_pixels = malloc(sizeof(unsigned char) * (new_image->_width * new_image->_height * 3));
+    new_image->_pixels = malloc(sizeof(RGB) * (new_image->_width * new_image->_height));
     
     if(!new_image->_pixels)
     {
@@ -106,9 +103,9 @@ void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, 
     green = green <= 255 ? green : 255;
     blue = blue <= 255 ? blue : 255;
 
-    image->_pixels[x + (y * image->_width * 3)] = red;
-    image->_pixels[x + (y * image->_width * 3) + 1] = green;
-    image->_pixels[x + (y * image->_width * 3) + 2] = blue;
+    RGB color = { red, green, blue };
+
+    image->_pixels[x + (y * image->_width)] = color;
 }
 
 void pixmap_image_save(PixMapImage *image)
@@ -122,19 +119,17 @@ void pixmap_image_save(PixMapImage *image)
         if(w > 2)
         {
             fprintf(image->_image_file, "%d %d %d\n",
-                    image->_pixels[i], image->_pixels[i + 1], image->_pixels[i + 2]);
+                    image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
             w = 0;
         } else {
             fprintf(image->_image_file, "%d %d %d ",
-                    image->_pixels[i], image->_pixels[i + 1], image->_pixels[i + 2]);
+                    image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
             
         }
  
         w++;
-        i += 3;
+        i++;
     }
-
-    pixmap_print(image);
 }
 
 int pixmap_image_get_width(PixMapImage *image)
