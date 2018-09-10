@@ -18,6 +18,8 @@ int main()
         }
     }
 
+    pixmap_image_set_pixel(image, 1, 1, 255, 0, 0);
+
     printf("Width: %d\nHeight: %d\nMaximum color value: %d\n", pixmap_image_get_width(image),
                                                                pixmap_image_get_height(image),
                                                                pixmap_image_get_max_color_value(image));
