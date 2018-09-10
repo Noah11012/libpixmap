@@ -8,7 +8,7 @@ This is a list of issues needed to be fixed to release the first version of this
 
 Level 1 issues don't necessarily have to be completed for the library to be released. These issues are minor and can be resolved after the release.
 
-Level 2 issues should be fixed but are medium in priority. These types of issues mean an important part of the library is not functioning or a minor to medium bug is present.
+Level 2 issues should be fixed but are medium in priority. These types of issues mean an important part of the library is not functioning, an API design decision, or a minor to medium bug is present.
 
 Level 3 issues *MUST* be completed before the release of this library. These issues are open when a fundemental part of the library is not complete. E.g. `pixmap_image_open()` not working.
 
