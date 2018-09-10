@@ -4,7 +4,7 @@ Libpixmap is a library to read and write pixmap image formats with a simple to u
 This library is a work in progress. Any help would be appreciated.
 
 ## Issues
-This is a list of issues needed to be fixed to release the first version of this library.
+This is a list of issues needing to be resolved to release the first version of this library.
 
 Level 1 issues don't necessarily have to be completed for the library to be released. Usually they pertain to refactoring of the code. These issues are minor and can be resolved after the release.
 
