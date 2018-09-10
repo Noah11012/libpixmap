@@ -65,7 +65,13 @@ PixMapImage *pixmap_image_open(char const *name)
     unsigned char sig[3];
     fread(sig, sizeof(unsigned char), 2, new_image->_image_file);
 
-    if(!(sig[0] == 'P' && sig[1] == '3')) return 0;
+    if(!(sig[0] == 'P' && sig[1] == '3'))
+    {
+        free(new_image->_pixels);
+        fclose(new_image->_image_file);
+        free(new_image);
+        return 0;
+    }
 
     int c;
     int comment = 0;
