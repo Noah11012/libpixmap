@@ -124,11 +124,11 @@ void pixmap_image_save(PixMapImage *image)
     {        
         if(w > 2)
         {
-            fprintf(image->_image_file, "%d %d %d\n",
+            fprintf(image->_image_file, "%u %u %u\n",
                     image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
             w = 0;
         } else {
-            fprintf(image->_image_file, "%d %d %d ",
+            fprintf(image->_image_file, "%u %u %u ",
                     image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
             
         }
