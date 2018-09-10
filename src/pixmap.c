@@ -52,10 +52,19 @@ PixMapImage *pixmap_image_open(char const *name)
 
     if(!new_image) return 0;
 
+    new_image->_pixels = malloc(sizeof(RGB) * (new_image->_width * new_image->_height));
+    
+    if(!new_image->_pixels)
+    {
+        free(new_image);
+        return 0;
+    }
+
     new_image->_image_file = fopen(name, "r+");
 
     if(!new_image->_image_file)
     {
+        free(new_image->_pixels);
         free(new_image);
         return 0;
     }
@@ -79,15 +88,6 @@ PixMapImage *pixmap_image_open(char const *name)
                                                         &new_image->_max_color_value);
             break;
         }
-    }
-
-    new_image->_pixels = malloc(sizeof(RGB) * (new_image->_width * new_image->_height));
-    
-    if(!new_image->_pixels)
-    {
-        fclose(new_image->_image_file);
-        free(new_image);
-        return 0;
     }
 
     // TODO: parse pixels into array
