@@ -16,7 +16,7 @@ Level 3 issues *MUST* be completed before the release of this library. These iss
 |-------|-------|--------- |
 | 3     | `pixmap_image_open()` does not yet parse the pixel information into the `_pixels` array | No |
 | 2     | `pixmap_image_get_pixel()` currently returns a pointer to an `RGB` that corresponds to the pixel in the image. If the user changes any of the members in the `RGB` variable and calls `pixmap_image_save()` the pixel will change to one the user provided. It would better only to have the pixels changed through the `pixmap_image_set_pixel()` function. | No |
-| 1     | Some functions like `pixmap_image_set_pixel()` doesn't tell the user if an error occurred. This should be rectified eventually. | No |
+| 1     | Some functions like `pixmap_image_set_pixel()` doesn't tell the user if an error occurred. This should be rectified eventually. | Yes |
 
 ## Build
 
