@@ -2,7 +2,7 @@
 
 int main()
 {
-    PixMapImage *image = pixmap_image_new("/home/noah/Desktop/test.ppm", 2, 2, 255);
+    PixMapImage *image = pixmap_image_new("test.ppm", 2, 2, 255);
 
     if(!image)
     {
@@ -36,7 +36,7 @@ int main()
     pixmap_image_save(image);
     pixmap_image_close(image);
 
-    PixMapImage *image2 = pixmap_image_open("/home/noah/Desktop/test.ppm");
+    PixMapImage *image2 = pixmap_image_open("test.ppm");
 
     if(!image2)
     {
