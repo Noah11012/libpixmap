@@ -23,10 +23,10 @@ int main()
                                                                pixmap_image_get_max_color_value(image));
 
     RGB *color = pixmap_image_get_pixel(image, 0, 0);
-    printf("Color: %d %d %d\n", color->red, color->green, color->blue);
+    printf("Color: %d %d %d\n", rgb_get_red(color), rgb_get_green(color), rgb_get_blue(color));
 
     RGB *color2 = pixmap_image_get_pixel(image, 1, 1);
-    printf("Color: %d %d %d\n", color2->red, color2->green, color2->blue);
+    printf("Color: %d %d %d\n", rgb_get_red(color2), rgb_get_green(color2), rgb_get_blue(color2));
 
     RGB *color3 = pixmap_image_get_pixel(image, 2, 2);
     if(!color3) printf("Out of bounds!\n");

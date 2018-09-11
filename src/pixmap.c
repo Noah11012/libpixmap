@@ -9,6 +9,28 @@ struct _PixMapImage
     int _max_color_value;
 };
 
+struct _RGB
+{
+    unsigned int red;
+    unsigned int green;
+    unsigned int blue;
+};
+
+unsigned int rgb_get_red(RGB *rgb)
+{
+    return rgb->red;
+}
+
+unsigned int rgb_get_green(RGB *rgb)
+{
+    return rgb->green;
+}
+
+unsigned int rgb_get_blue(RGB *rgb)
+{
+    return rgb->blue;
+}
+
 PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_color_val)
 {
     PixMapImage *new_image = malloc(sizeof(*new_image));

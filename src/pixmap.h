@@ -7,12 +7,11 @@
 
 typedef struct _PixMapImage PixMapImage;
 
-typedef struct _RGB
-{
-    unsigned int red;
-    unsigned int green;
-    unsigned int blue;
-} RGB;
+typedef struct _RGB RGB;
+
+unsigned int rgb_get_red  (RGB *rgb);
+unsigned int rgb_get_green(RGB *rgb);
+unsigned int rgb_get_blue (RGB *rgb);
 
 PixMapImage *pixmap_image_new                (char const *name, int width, int height, int max_color_val);
 PixMapImage *pixmap_image_open               (char const *name);
