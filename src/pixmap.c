@@ -85,6 +85,8 @@ PixMapImage *pixmap_image_open(char const *name)
         return 0;
     }
 
+    /* Three while loops to get width, height, maximum color value */
+    /* Looks hacky and probably should be improved later */
     int c;
     int comment = 0;
     new_image->_width = 0;
@@ -97,8 +99,33 @@ PixMapImage *pixmap_image_open(char const *name)
         if(isdigit(c) && !comment)
         {
             ungetc(c, new_image->_image_file);
-            fscanf(new_image->_image_file, "%d %d\n%d", &new_image->_width, &new_image->_height,
-                                                        &new_image->_max_color_value);
+            fscanf(new_image->_image_file, "%d", &new_image->_width);
+            break;
+        }
+    }
+
+    while((c = fgetc(new_image->_image_file)) != EOF)
+    {
+        if(c == '#') comment = 1;
+        if(c == '\n') comment = 0;
+
+        if(isdigit(c) && !comment)
+        {
+            ungetc(c, new_image->_image_file);
+            fscanf(new_image->_image_file, "%d", &new_image->_height);
+            break;
+        }
+    }
+
+    while((c = fgetc(new_image->_image_file)) != EOF)
+    {
+        if(c == '#') comment = 1;
+        if(c == '\n') comment = 0;
+
+        if(isdigit(c) && !comment)
+        {
+            ungetc(c, new_image->_image_file);
+            fscanf(new_image->_image_file, "%d", &new_image->_max_color_value);
             break;
         }
     }
