@@ -1,24 +1,7 @@
 # PixMap library in C
 Libpixmap is a library to read and write pixmap image formats with a simple to use API.
 
-This library is a work in progress. Any help would be appreciated.
-
-## Issues
-This is a list of issues needing to be resolved to release the first version of this library.
-
-Level 1 issues don't necessarily have to be completed for the library to be released. Usually they pertain to refactoring of the code. These issues are minor and can be resolved after the release.
-
-Level 2 issues should be fixed but are medium in priority. These types of issues mean an important part of the library is not functioning, an API design decision, or a minor to medium bug is present.
-
-Level 3 issues *MUST* be completed before the release of this library. These issues are open when a fundemental part of the library is not complete. E.g. `pixmap_image_open()` not working.
-
-| Level | Issue | Complete |
-|-------|-------|--------- |
-| 3     | `pixmap_image_open()` does not yet parse the pixel information into the `_pixels` array | Yes |
-| 2     | `pixmap_image_get_pixel()` currently returns a pointer to an `RGB` that corresponds to the pixel in the image. If the user changes any of the members in the `RGB` variable and calls `pixmap_image_save()` the pixel will change to one the user provided. It would better only to have the pixels changed through the `pixmap_image_set_pixel()` function. | Yes |
-| 1     | Some functions like `pixmap_image_set_pixel()` doesn't tell the user if an error occurred. This should be rectified eventually. | Yes |
-
-## Build
+## Getting Started
 
 `git clone https://github.com/Noah11012/libpixmap.git`
 
@@ -51,6 +34,11 @@ int main(int argc, char *argv[])
 }
 ```
 
-## Usage
+## Documentation
+### `pixmap_image_new(char const *name, int width, int height, int max_color_val)`
 
-// Complete this section
+Creates a new at the path `name` and with the dimensions of `with` x `height` and the maximum color value of `max_color_val`. `max_color_val` is clamped at 255. Returns 0 on failure.
+
+### `pixmap_image_open(char const *name)`
+
+Opens an existing image at the path `name`. Returns a `PixMapImage` on success. Otherwise, returns 0.
