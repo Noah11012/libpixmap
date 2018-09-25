@@ -35,10 +35,10 @@ int main(int argc, char *argv[])
 ```
 
 ## Documentation
-### `pixmap_image_new(char const *name, int width, int height, int max_color_val)`
+### pixmap_image_new(char const *name, int width, int height, int max_color_val)
 
 Creates a new at the path `name` and with the dimensions of `with` x `height` and the maximum color value of `max_color_val`. `max_color_val` is clamped at 255. Returns 0 on failure.
 
-### `pixmap_image_open(char const *name)`
+### pixmap_image_open(char const *name)
 
 Opens an existing image at the path `name`. Returns a `PixMapImage` on success. Otherwise, returns 0.
