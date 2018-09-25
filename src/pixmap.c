@@ -161,6 +161,22 @@ PixMapImage *pixmap_image_open(char const *name)
     return new_image;
 }
 
+PixMapImage *pixmap_image_copy(PixMapImage *image, char const *new_name)
+{
+    PixMapImage *copy_image = pixmap_image_new(new_name, image->_width, image->_height, image->_max_color_value);
+    
+    if(!copy_image) return 0;
+
+    int i = 0;
+    while(i < copy_image->_width * copy_image->_height)
+    {
+        copy_image->_pixels[i] = image->_pixels[i];
+        i++;
+    }
+
+    return copy_image;
+}
+
 void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, unsigned int red, unsigned int green, unsigned int blue, int *error)
 {
     if(x > (image->_width - 1) || y > (image->_height - 1))
@@ -175,6 +191,7 @@ void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, 
 
     RGB color = { red, green, blue };
 
+    if(error) *error = 0;
     image->_pixels[x + (y * image->_width)] = color;
 }
 

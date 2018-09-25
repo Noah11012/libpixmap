@@ -37,8 +37,16 @@ int main(int argc, char *argv[])
 ## Documentation
 ### pixmap_image_new(char const *name, int width, int height, int max_color_val)
 
-Creates a new at the path `name` and with the dimensions of `with` x `height` and the maximum color value of `max_color_val`. `max_color_val` is clamped at 255. Returns 0 on failure.
+Creates a new at the path `name` and with the dimensions of `with` x `height` and the maximum color value of `max_color_val`. `max_color_val` is clamped at 255. Free with `pixmap_image_close()`. Returns 0 on failure.
 
 ### pixmap_image_open(char const *name)
 
-Opens an existing image at the path `name`. Returns a `PixMapImage` on success. Otherwise, returns 0.
+Opens an existing image at the path `name`. Free with `pixmap_image_close()`. Returns a `PixMapImage` on success. Otherwise, returns 0.
+
+### pixmap_image_copy(PixMapImage *image, char const *new_name)
+
+Copies an existing `PixMapImage` under the new name `new_name`. Does not actually write to disk until `pixmap_image_save()` is called. Free with `pixmap_image_close()`. Returns the copy on success but 0 on failure.
+
+### pixmap_image_close(PixMapImage *image)
+
+Frees and closes all resources associated with `image`.

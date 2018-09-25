@@ -1,61 +1,41 @@
 #include "../src/pixmap.h"
 
-int main()
+int test1()
 {
-    PixMapImage *image = pixmap_image_new("test.ppm", 2, 2, 255);
+    PixMapImage *image = pixmap_image_new("test.ppm", 100, 100, 255);
 
     if(!image)
-    {
-        printf("Failed to create image!\n");
         return -1;
-    }
+    
+    PixMapImage *image_copy = pixmap_image_copy(image, "test_copy.ppm");
 
-    for(int i = 0; i < 2; i++)
+    if(!image_copy)
+        return -1;
+    
+    int status = 0;
+
+    for(int i = 0; i < 100; i++)
     {
-        for(int j = 0; j < 2; j++)
+        for(int j = 0; j < 100; j++)
         {
-            pixmap_image_set_pixel(image, i, j, 255, 255, 255, 0);
+            pixmap_image_set_pixel(image, j, i, j, i, 0, &status);
+
+            if(status)
+                return -1;
         }
     }
-
-    printf("Width: %d\nHeight: %d\nMaximum color value: %d\n", pixmap_image_get_width(image),
-                                                               pixmap_image_get_height(image),
-                                                               pixmap_image_get_max_color_value(image));
-
-    RGB color = pixmap_image_get_pixel(image, 0, 0);
-    printf("Color: %d %d %d\n", color.red, color.green, color.blue);
-
-    RGB color2 = pixmap_image_get_pixel(image, 1, 1);
-    printf("Color: %d %d %d\n", color2, color2, color2);
-
-    RGB color3 = pixmap_image_get_pixel(image, 2, 2);
-    if(color3.red < 0) printf("Out of bounds!\n");
 
     pixmap_image_save(image);
-    pixmap_image_close(image);
+    pixmap_image_save(image_copy);
 
-    PixMapImage *image2 = pixmap_image_open("test.ppm");
+    return 0;
+}
 
-    if(!image2)
-    {
-        printf("Could not open image!\n");
-        return 0;
-    }
 
-    printf("Width: %d\nHeight: %d\nMaximum color value: %d\n",
-           pixmap_image_get_width(image2),
-           pixmap_image_get_height(image2),
-           pixmap_image_get_max_color_value(image2));
+int main()
+{
+    if(test1() != 0)
+        return -1;
     
-    printf("Printing _pixels\n");
-    for(int i = 0; i < 2; i++)
-    {
-        for(int j = 0; j < 2; j++)
-        {
-            RGB pixel = pixmap_image_get_pixel(image2, j, i);
-            printf("%u %u %u\n", pixel.red, pixel.green, pixel.blue);
-        }
-    }
-
-    pixmap_image_close(image2);
+    return 0;
 }
