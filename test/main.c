@@ -22,14 +22,14 @@ int main()
                                                                pixmap_image_get_height(image),
                                                                pixmap_image_get_max_color_value(image));
 
-    RGB *color = pixmap_image_get_pixel(image, 0, 0);
-    printf("Color: %d %d %d\n", rgb_get_red(color), rgb_get_green(color), rgb_get_blue(color));
+    RGB color = pixmap_image_get_pixel(image, 0, 0);
+    printf("Color: %d %d %d\n", color.red, color.green, color.blue);
 
-    RGB *color2 = pixmap_image_get_pixel(image, 1, 1);
-    printf("Color: %d %d %d\n", rgb_get_red(color2), rgb_get_green(color2), rgb_get_blue(color2));
+    RGB color2 = pixmap_image_get_pixel(image, 1, 1);
+    printf("Color: %d %d %d\n", color2, color2, color2);
 
-    RGB *color3 = pixmap_image_get_pixel(image, 2, 2);
-    if(!color3) printf("Out of bounds!\n");
+    RGB color3 = pixmap_image_get_pixel(image, 2, 2);
+    if(color3.red < 0) printf("Out of bounds!\n");
 
     pixmap_image_save(image);
     pixmap_image_close(image);
@@ -52,8 +52,8 @@ int main()
     {
         for(int j = 0; j < 2; j++)
         {
-            RGB *pixel = pixmap_image_get_pixel(image2, j, i);
-            printf("%u %u %u\n", rgb_get_red(pixel), rgb_get_green(pixel), rgb_get_blue(pixel));
+            RGB pixel = pixmap_image_get_pixel(image2, j, i);
+            printf("%u %u %u\n", pixel.red, pixel.green, pixel.blue);
         }
     }
 

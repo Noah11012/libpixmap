@@ -9,28 +9,6 @@ struct _PixMapImage
     int _max_color_value;
 };
 
-struct _RGB
-{
-    unsigned int red;
-    unsigned int green;
-    unsigned int blue;
-};
-
-unsigned int rgb_get_red(RGB *rgb)
-{
-    return rgb->red;
-}
-
-unsigned int rgb_get_green(RGB *rgb)
-{
-    return rgb->green;
-}
-
-unsigned int rgb_get_blue(RGB *rgb)
-{
-    return rgb->blue;
-}
-
 PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_color_val)
 {
     PixMapImage *new_image = malloc(sizeof(*new_image));
@@ -200,11 +178,15 @@ void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, 
     image->_pixels[x + (y * image->_width)] = color;
 }
 
-RGB *pixmap_image_get_pixel(PixMapImage *image, unsigned int x, unsigned int y)
+RGB pixmap_image_get_pixel(PixMapImage *image, unsigned int x, unsigned int y)
 {
-    if(x > (image->_width - 1) || y > (image->_height - 1)) return 0;
+    if(x > (image->_width - 1) || y > (image->_height - 1))
+    {
+        RGB error_pixel = {-1, -1, -1};
+        return error_pixel;
+    }
 
-    return &image->_pixels[x + (y * image->_width)];
+    return image->_pixels[x + (y * image->_width)];
 }
 
 void pixmap_image_save(PixMapImage *image)
