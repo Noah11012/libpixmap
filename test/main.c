@@ -46,6 +46,16 @@ int main()
            pixmap_image_get_width(image2),
            pixmap_image_get_height(image2),
            pixmap_image_get_max_color_value(image2));
+    
+    printf("Printing _pixels\n");
+    for(int i = 0; i < 2; i++)
+    {
+        for(int j = 0; j < 2; j++)
+        {
+            RGB *pixel = pixmap_image_get_pixel(image2, j, i);
+            printf("%u %u %u\n", rgb_get_red(pixel), rgb_get_green(pixel), rgb_get_blue(pixel));
+        }
+    }
 
     pixmap_image_close(image2);
 }

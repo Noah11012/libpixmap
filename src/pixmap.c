@@ -85,7 +85,7 @@ PixMapImage *pixmap_image_open(char const *name)
         return 0;
     }
 
-    /* Three while loops to get width, height, maximum color value */
+    /* Three while loops to get width, height, and maximum color value */
     /* Looks hacky and probably should be improved later */
     int c;
     int comment = 0;
@@ -143,7 +143,42 @@ PixMapImage *pixmap_image_open(char const *name)
         return 0;
     }
 
-    // TODO: parse pixels into array
+    RGB pixel;
+    unsigned int a = 0;
+    int b = 1;
+    int pos = 0;
+
+    while((c = fgetc(new_image->_image_file)) != EOF)
+    {
+        a = 0;
+        if(isdigit(c))
+        {
+            ungetc(c, new_image->_image_file);
+            if(b > 3)
+            {
+                new_image->_pixels[pos] = pixel;
+                pos++;
+                b = 1;
+            }
+            
+            while((c = fgetc(new_image->_image_file)) != EOF && c != ' ')
+            {
+                a *= 10;
+                a += (c - '0');
+            }
+
+            printf("COLOR: %u\n", a);
+
+            if(b == 1)
+                pixel.red = a;
+            else if(b == 2)
+                pixel.green = a;
+            else if(b == 3)
+                pixel.blue = a;
+            
+            b++;
+        }
+    }
 
     return new_image;
 }
