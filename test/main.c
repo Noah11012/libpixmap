@@ -25,8 +25,14 @@ int test1()
         }
     }
 
-    pixmap_image_save(image);
-    pixmap_image_save(image_copy);
+    if(pixmap_image_save(image) != 0)
+        return -1;
+
+    if(pixmap_image_save(image_copy) != 0)
+        return -1;
+
+    pixmap_image_close(image);
+    pixmap_image_close(image_copy);
 
     return 0;
 }

@@ -22,7 +22,7 @@ void         pixmap_image_set_pixel          (PixMapImage *image,
                                               unsigned int red, unsigned int green, unsigned int blue,
                                               int *error);
 RGB          pixmap_image_get_pixel          (PixMapImage *image, unsigned int x, unsigned int y);
-void         pixmap_image_save               (PixMapImage *image);
+int          pixmap_image_save               (PixMapImage *image);
 int          pixmap_image_get_width          (PixMapImage *image);
 int          pixmap_image_get_height         (PixMapImage *image);
 int          pixmap_image_get_max_color_value(PixMapImage *image);

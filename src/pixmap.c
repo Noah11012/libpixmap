@@ -2,7 +2,7 @@
 
 struct _PixMapImage
 {
-    FILE *_image_file;
+    char *_file_name;
     int _width;
     int _height;
     RGB *_pixels;
@@ -27,14 +27,7 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
         return 0;
     }
 
-    new_image->_image_file = fopen(name, "w");
-
-    if(!new_image->_image_file)
-    {
-        free(new_image->_pixels);
-        free(new_image);
-        return 0;
-    }
+    new_image->_file_name = name;
 
     return new_image;
 }
@@ -45,20 +38,22 @@ PixMapImage *pixmap_image_open(char const *name)
 
     if(!new_image) return 0;
 
-    new_image->_image_file = fopen(name, "r+");
+    new_image->_file_name = name;
 
-    if(!new_image->_image_file)
+    FILE *image_file = fopen(new_image->_file_name, "r+");
+
+    if(!image_file)
     {
         free(new_image);
         return 0;
     }
 
     unsigned char sig[3];
-    fread(sig, sizeof(unsigned char), 2, new_image->_image_file);
+    fread(sig, sizeof(unsigned char), 2, image_file);
 
     if(!(sig[0] == 'P' && sig[1] == '3'))
     {
-        fclose(new_image->_image_file);
+        fclose(image_file);
         free(new_image);
         return 0;
     }
@@ -69,41 +64,41 @@ PixMapImage *pixmap_image_open(char const *name)
     int comment = 0;
     new_image->_width = 0;
     new_image->_height = 0;
-    while((c = fgetc(new_image->_image_file)) != EOF)
+    while((c = fgetc(image_file)) != EOF)
     {
         if(c == '#') comment = 1;
         if(c == '\n') comment = 0;
 
         if(isdigit(c) && !comment)
         {
-            ungetc(c, new_image->_image_file);
-            fscanf(new_image->_image_file, "%d", &new_image->_width);
+            ungetc(c, image_file);
+            fscanf(image_file, "%d", &new_image->_width);
             break;
         }
     }
 
-    while((c = fgetc(new_image->_image_file)) != EOF)
+    while((c = fgetc(image_file)) != EOF)
     {
         if(c == '#') comment = 1;
         if(c == '\n') comment = 0;
 
         if(isdigit(c) && !comment)
         {
-            ungetc(c, new_image->_image_file);
-            fscanf(new_image->_image_file, "%d", &new_image->_height);
+            ungetc(c, image_file);
+            fscanf(image_file, "%d", &new_image->_height);
             break;
         }
     }
 
-    while((c = fgetc(new_image->_image_file)) != EOF)
+    while((c = fgetc(image_file)) != EOF)
     {
         if(c == '#') comment = 1;
         if(c == '\n') comment = 0;
 
         if(isdigit(c) && !comment)
         {
-            ungetc(c, new_image->_image_file);
-            fscanf(new_image->_image_file, "%d", &new_image->_max_color_value);
+            ungetc(c, image_file);
+            fscanf(image_file, "%d", &new_image->_max_color_value);
             break;
         }
     }
@@ -116,7 +111,7 @@ PixMapImage *pixmap_image_open(char const *name)
         
     if(!new_image->_pixels)
     {
-        fclose(new_image->_image_file);
+        fclose(image_file);
         free(new_image);
         return 0;
     }
@@ -126,12 +121,12 @@ PixMapImage *pixmap_image_open(char const *name)
     int b = 1;
     int pos = 0;
 
-    while((c = fgetc(new_image->_image_file)) != EOF)
+    while((c = fgetc(image_file)) != EOF)
     {
         a = 0;
         if(isdigit(c))
         {
-            ungetc(c, new_image->_image_file);
+            ungetc(c, image_file);
             if(b > 3)
             {
                 new_image->_pixels[pos] = pixel;
@@ -139,7 +134,7 @@ PixMapImage *pixmap_image_open(char const *name)
                 b = 1;
             }
             
-            while((c = fgetc(new_image->_image_file)) != EOF && c != ' ')
+            while((c = fgetc(image_file)) != EOF && c != ' ')
             {
                 a *= 10;
                 a += (c - '0');
@@ -157,6 +152,8 @@ PixMapImage *pixmap_image_open(char const *name)
             b++;
         }
     }
+
+    fclose(image_file);
 
     return new_image;
 }
@@ -206,9 +203,14 @@ RGB pixmap_image_get_pixel(PixMapImage *image, unsigned int x, unsigned int y)
     return image->_pixels[x + (y * image->_width)];
 }
 
-void pixmap_image_save(PixMapImage *image)
+int pixmap_image_save(PixMapImage *image)
 {
-    fprintf(image->_image_file, "%s\n%d %d\n%d\n", "P3", image->_width, image->_height, image->_max_color_value);
+    FILE *image_file = fopen(image->_file_name, "w");
+
+    if(!image_file)
+        return -1;
+
+    fprintf(image_file, "%s\n%d %d\n%d\n", "P3", image->_width, image->_height, image->_max_color_value);
     
     int i = 0;
     int w = 0;
@@ -216,11 +218,11 @@ void pixmap_image_save(PixMapImage *image)
     {        
         if(w > 2)
         {
-            fprintf(image->_image_file, "%d %d %d\n",
+            fprintf(image_file, "%d %d %d\n",
                     image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
             w = 0;
         } else {
-            fprintf(image->_image_file, "%d %d %d ",
+            fprintf(image_file, "%d %d %d ",
                     image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
             
         }
@@ -228,6 +230,10 @@ void pixmap_image_save(PixMapImage *image)
         w++;
         i++;
     }
+
+    fclose(image_file);
+
+    return 0;
 }
 
 int pixmap_image_get_width(PixMapImage *image)
@@ -249,7 +255,6 @@ void pixmap_image_close(PixMapImage *image)
 {
     if(!image) return;
 
-    fclose(image->_image_file);
     free(image->_pixels);
     free(image);
 }
