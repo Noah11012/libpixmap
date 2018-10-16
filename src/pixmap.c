@@ -115,39 +115,40 @@ PixMapImage *pixmap_image_open(char const *name)
     }
 
     RGB pixel;
-    unsigned int a = 0;
-    int b = 1;
-    int pos = 0;
-
+    unsigned int value_in = 0;
+    int rgb_counter = 1;
+    int file_pos = 0;
+    
+    /* Read in the pixel values */
     while((c = fgetc(image_file)) != EOF)
     {
-        a = 0;
+        value_in = 0;
         if(isdigit(c))
         {
             ungetc(c, image_file);
-            if(b > 3)
+            if(rgb_counter > 3)
             {
-                new_image->_pixels[pos] = pixel;
-                pos++;
-                b = 1;
+                new_image->_pixels[file_pos] = pixel;
+                file_pos++;
+                rgb_counter = 1;
             }
             
             while((c = fgetc(image_file)) != EOF && c != ' ')
             {
-                a *= 10;
-                a += (c - '0');
+                value_in *= 10;
+                value_in += (c - '0');
             }
 
-            printf("COLOR: %u\n", a);
+            printf("COLOR: %u\n", value_in);
 
-            if(b == 1)
-                pixel.red = a;
-            else if(b == 2)
-                pixel.green = a;
-            else if(b == 3)
-                pixel.blue = a;
+            if(rgb_counter == 1)
+                pixel.red = value_in;
+            else if(rgb_counter == 2)
+                pixel.green = value_in;
+            else if(rgb_counter == 3)
+                pixel.blue = value_in;
             
-            b++;
+            rgb_counter++;
         }
     }
 
