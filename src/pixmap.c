@@ -34,10 +34,9 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
 
 PixMapImage *pixmap_image_open(char const *name)
 {
-    FILE *image_file = fopen(new_image->_file_name, "r+");
+    FILE *image_file = fopen(name, "r+");
     if(!image_file)
     {
-        free(new_image);
         return 0;
     }
 
