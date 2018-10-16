@@ -34,19 +34,18 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
 
 PixMapImage *pixmap_image_open(char const *name)
 {
-    PixMapImage *new_image = malloc(sizeof(*new_image));
-
-    if(!new_image) return 0;
-
-    new_image->_file_name = name;
-
     FILE *image_file = fopen(new_image->_file_name, "r+");
-
     if(!image_file)
     {
         free(new_image);
         return 0;
     }
+
+    PixMapImage *new_image = malloc(sizeof(*new_image));
+
+    if(!new_image) return 0;
+
+    new_image->_file_name = name;
 
     unsigned char sig[3];
     fread(sig, sizeof(unsigned char), 2, image_file);
