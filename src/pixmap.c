@@ -178,9 +178,10 @@ RGB *pixmap_image_get_pixel_array(PixMapImage *image)
     return image->_pixels;
 }
 
-void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, unsigned int red, unsigned int green, unsigned int blue, int *error)
+void pixmap_image_set_pixel(PixMapImage *image, int x, int y, int red, int green, int blue, int *error)
 {
-    if(x > (image->_width - 1) || y > (image->_height - 1))
+    if(x > (image->_width - 1) || y > (image->_height - 1)
+       || x < 0 || y < 0 || red < 0 || green < 0 || blue < 0)
     {
         if(error) *error = 1;
         return;
@@ -196,9 +197,10 @@ void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, 
     image->_pixels[x + (y * image->_width)] = color;
 }
 
-RGB pixmap_image_get_pixel(PixMapImage *image, unsigned int x, unsigned int y)
+RGB pixmap_image_get_pixel(PixMapImage *image, int x, int y)
 {
-    if(x > (image->_width - 1) || y > (image->_height - 1))
+    if(x > (image->_width - 1) || y > (image->_height - 1)
+       || x < 0 || y < 0)
     {
         RGB error_pixel = {-1, -1, -1};
         return error_pixel;
