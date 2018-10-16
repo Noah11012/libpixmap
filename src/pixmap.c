@@ -108,7 +108,7 @@ PixMapImage *pixmap_image_open(char const *name)
 
     new_image->_pixels = malloc(sizeof(RGB) * (new_image->_width * new_image->_height));
 
-        
+
     if(!new_image->_pixels)
     {
         fclose(image_file);
@@ -133,7 +133,7 @@ PixMapImage *pixmap_image_open(char const *name)
                 pos++;
                 b = 1;
             }
-            
+
             while((c = fgetc(image_file)) != EOF && c != ' ')
             {
                 a *= 10;
@@ -148,7 +148,7 @@ PixMapImage *pixmap_image_open(char const *name)
                 pixel.green = a;
             else if(b == 3)
                 pixel.blue = a;
-            
+
             b++;
         }
     }
@@ -161,7 +161,7 @@ PixMapImage *pixmap_image_open(char const *name)
 PixMapImage *pixmap_image_copy(PixMapImage *image, char const *new_name)
 {
     PixMapImage *copy_image = pixmap_image_new(new_name, image->_width, image->_height, image->_max_color_value);
-    
+
     if(!copy_image) return 0;
 
     int i = 0;
@@ -172,6 +172,11 @@ PixMapImage *pixmap_image_copy(PixMapImage *image, char const *new_name)
     }
 
     return copy_image;
+}
+
+RGB *pixmap_image_get_pixel_array(PixMapImage *image)
+{
+    return image->_pixels;
 }
 
 void pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, unsigned int red, unsigned int green, unsigned int blue, int *error)
@@ -211,11 +216,11 @@ int pixmap_image_save(PixMapImage *image)
         return -1;
 
     fprintf(image_file, "%s\n%d %d\n%d\n", "P3", image->_width, image->_height, image->_max_color_value);
-    
+
     int i = 0;
     int w = 0;
     while(i < image->_width * image->_height)
-    {        
+    {
         if(w > 2)
         {
             fprintf(image_file, "%d %d %d\n",
@@ -224,9 +229,9 @@ int pixmap_image_save(PixMapImage *image)
         } else {
             fprintf(image_file, "%d %d %d ",
                     image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
-            
+
         }
- 
+
         w++;
         i++;
     }

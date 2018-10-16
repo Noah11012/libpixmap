@@ -51,6 +51,12 @@ Opens an existing image at the path `name`. Free with `pixmap_image_close()`. Re
 
 Copies an existing `PixMapImage` under the new name `new_name`. Does not actually write to disk until `pixmap_image_save()` is called. Free with `pixmap_image_close()`. Returns the copy on success but 0 on failure.
 
+### pixmap_image_get_pixel_array(PixMapImage *image)
+
+Returns the underlying array of `RGB` values from a given `PixMapImage`.
+DO NOT free this array with `free()`. Use `pixmap_image_close()` on the `PixMapImage`
+instead. Any changes to the pixel array can be saved using `pixmap_image_save()`.
+
 ### pixmap_image_set_pixel(PixMapImage *image, unsigned int x, unsigned int y, unsigned int red, unsigned int green, unsigned int blue, int *error)
 
 Sets an individual pixel from the image to a specified color. If the provided coordinate is out of bounds, then `error` will be set to 1 if a pointer to an `int` was given.
