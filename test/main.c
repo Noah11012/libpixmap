@@ -36,11 +36,29 @@ int test1()
     return 0;
 }
 
+int test2()
+{
+    PixMapImage *image_in = pixmap_image_open("test_copy.ppm");
+    if(!image_in) {
+	return -1;
+    }
+    PixMapImage *image_out = pixmap_image_copy(image_in, "test_copy2.ppm");
+    if(!image_out) {
+	return -1;
+    }
+    int status = pixmap_image_save(image_out);
+    if(status != 0) {
+	return -1;
+    }
+    return 0;
+}
+
 
 int main()
 {
     if(test1() != 0)
         return -1;
-    
+    if(test2() != 0)
+	return -1;
     return 0;
 }
