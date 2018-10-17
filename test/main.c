@@ -7,11 +7,6 @@ int test1()
     if(!image)
         return -1;
     
-    PixMapImage *image_copy = pixmap_image_copy(image, "test_copy.ppm");
-
-    if(!image_copy)
-        return -1;
-    
     int status = 0;
 
     for(int i = 0; i < 100; i++)
@@ -24,6 +19,10 @@ int test1()
                 return -1;
         }
     }
+
+    PixMapImage *image_copy = pixmap_image_copy(image, "test_copy.ppm");
+    if(!image_copy)
+	return -1;
 
     if(pixmap_image_save(image) != 0)
         return -1;
