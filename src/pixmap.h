@@ -19,10 +19,10 @@ PixMapImage *pixmap_image_open               (char const *name);
 PixMapImage *pixmap_image_copy               (PixMapImage *image, char const *new_name);
 RGB         *pixmap_image_get_pixel_array    (PixMapImage *image);
 void         pixmap_image_set_pixel          (PixMapImage *image,
-                                              unsigned int x, unsigned int y,
-                                              unsigned int red, unsigned int green, unsigned int blue,
+                                              int x, int y,
+                                              int red, int green, int blue,
                                               int *error);
-RGB          pixmap_image_get_pixel          (PixMapImage *image, unsigned int x, unsigned int y);
+RGB          pixmap_image_get_pixel          (PixMapImage *image, int x, int y);
 int          pixmap_image_save               (PixMapImage *image);
 int          pixmap_image_get_width          (PixMapImage *image);
 int          pixmap_image_get_height         (PixMapImage *image);
