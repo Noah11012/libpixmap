@@ -257,6 +257,15 @@ int pixmap_image_get_max_color_value(PixMapImage *image)
     return image->_max_color_value;
 }
 
+void pixmap_image_foreach_pixel(PixMapImage *image,
+				void (*func)(RGB pixel, void *func_arg), void *arg)
+{
+    int total_pixels = image->_width * image->_height;
+    for(int i = 0; i < total_pixels; i++) {
+	(*func)(image->_pixels[i], arg);
+    }
+}
+
 void pixmap_image_close(PixMapImage *image)
 {
     if(!image) return;
