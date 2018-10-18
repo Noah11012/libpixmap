@@ -139,8 +139,6 @@ PixMapImage *pixmap_image_open(char const *name)
                 value_in += (c - '0');
             }
 
-            printf("COLOR: %u\n", value_in);
-
             if(rgb_counter == 1)
                 pixel.red = value_in;
             else if(rgb_counter == 2)
@@ -195,6 +193,11 @@ void pixmap_image_set_pixel(PixMapImage *image, int x, int y, int red, int green
 
     if(error) *error = 0;
     image->_pixels[x + (y * image->_width)] = color;
+}
+
+void pixmap_image_set_pixel_by_rgb(PixMapImage *image, int x, int y, RGB *rgb, int *error)
+{
+    pixmap_image_set_pixel(image, x, y, rgb->red, rgb->green, rgb->blue, error);
 }
 
 RGB pixmap_image_get_pixel(PixMapImage *image, int x, int y)
