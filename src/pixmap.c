@@ -133,7 +133,7 @@ PixMapImage *pixmap_image_open(char const *name)
                 rgb_counter = 1;
             }
 
-            while((c = fgetc(image_file)) != EOF && c != ' ')
+            while((c = fgetc(image_file)) != EOF && c != ' ' && c != '\n')
             {
                 value_in *= 10;
                 value_in += (c - '0');

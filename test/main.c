@@ -33,7 +33,7 @@ int test1()
     pixmap_image_close(image);
     pixmap_image_close(image_copy);
 
-    return 0;
+return 0;
 }
 
 int test2()
