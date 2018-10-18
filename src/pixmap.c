@@ -9,6 +9,8 @@ struct _PixMapImage
     int _max_color_value;
 };
 
+static int get_metadata_value(FILE *file);
+
 PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_color_val)
 {
     PixMapImage *new_image = malloc(sizeof(*new_image));
@@ -56,50 +58,9 @@ PixMapImage *pixmap_image_open(char const *name)
         return 0;
     }
 
-    /* Three while loops to get width, height, and maximum color value */
-    /* Looks hacky and probably should be improved later */
-    int c;
-    int comment = 0;
-    new_image->_width = 0;
-    new_image->_height = 0;
-    while((c = fgetc(image_file)) != EOF)
-    {
-        if(c == '#') comment = 1;
-        if(c == '\n') comment = 0;
-
-        if(isdigit(c) && !comment)
-        {
-            ungetc(c, image_file);
-            fscanf(image_file, "%d", &new_image->_width);
-            break;
-        }
-    }
-
-    while((c = fgetc(image_file)) != EOF)
-    {
-        if(c == '#') comment = 1;
-        if(c == '\n') comment = 0;
-
-        if(isdigit(c) && !comment)
-        {
-            ungetc(c, image_file);
-            fscanf(image_file, "%d", &new_image->_height);
-            break;
-        }
-    }
-
-    while((c = fgetc(image_file)) != EOF)
-    {
-        if(c == '#') comment = 1;
-        if(c == '\n') comment = 0;
-
-        if(isdigit(c) && !comment)
-        {
-            ungetc(c, image_file);
-            fscanf(image_file, "%d", &new_image->_max_color_value);
-            break;
-        }
-    }
+    new_image->_width = get_metadata_value(image_file);
+    new_image->_height = get_metadata_value(image_file);
+    new_image->_max_color_value = get_metadata_value(image_file);
 
     new_image->_width = new_image->_width > 0 ? new_image->_width : 1;
     new_image->_height = new_image->_height > 0 ? new_image->_height : 1;
@@ -114,6 +75,7 @@ PixMapImage *pixmap_image_open(char const *name)
         return 0;
     }
 
+    int c;
     RGB pixel;
     unsigned int value_in = 0;
     int rgb_counter = 1;
@@ -272,4 +234,23 @@ void pixmap_image_close(PixMapImage *image)
 
     free(image->_pixels);
     free(image);
+}
+
+static int get_metadata_value(FILE *fin)
+{
+    int c, res;
+    int comment = 0;
+    while((c = fgetc(fin)) != EOF)
+    {
+        if(c == '#') comment = 1;
+        if(c == '\n') comment = 0;
+
+        if(isdigit(c) && !comment)
+        {
+            ungetc(c, fin);
+            fscanf(fin, "%d", &res);
+            break;
+        }
+    }
+    return res;
 }
