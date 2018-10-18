@@ -1,40 +1,42 @@
 - If the body of an if statement is only one line, omit the braces.
   Example:
-  
-	if(true)
-	{
-		printf("It is true");
-	}
+```  
+    if(true)
+    {
+        printf("It is true");
+    }
+```
 	
   becomes
+  ```
+    if(true)
+        printf("It is true");
+```
 
-	if(true)
-		printf("It is true");
 
-
-- Structs are declared in a header file and their fields are shown in
+- `struct`s are declared in a header file and their fields are shown in
   the source file.
   Example:
-
-	struct SomeStruct
-	{
-		int x;
-		double y;
-	};
-
+```
+    struct SomeStruct
+    {
+        int x;
+        double y;
+    };
+```
   becomes
 
   - In header file:
-
-       typedef struct _SomeStruct SomeStruct;
-
+```
+    typedef struct _SomeStruct SomeStruct;
+```
   - In source file:
-
-       struct _SomeStruct
-       {
-		int x;
-		double y;
-	};
-
+```
+   struct _SomeStruct
+   {
+        int x;
+        double y;
+    };
+```
   This allows us to control what the user can access directly and what
   they must access using functions that allow reading/writing of the data.
