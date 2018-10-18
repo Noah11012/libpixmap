@@ -53,18 +53,6 @@ int test2()
     return 0;
 }
 
-int test3()
-{
-    PixMapImage *image = pixmap_image_open("/home/noah/Desktop/Documents/Projects/libpixmap/part1pairs/tree_2.ppm");
-
-    if(!image)
-        return -1;
-    
-    pixmap_image_save(image);
-
-    return 0;
-}
-
 int main()
 {
     if(test1() != 0)
@@ -72,9 +60,6 @@ int main()
 
     if(test2() != 0)
 	    return -1;
-    
-    if(test3() != 0)
-        return -1;
     
     return 0;
 }
