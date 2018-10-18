@@ -14,9 +14,15 @@ typedef struct _RGB
     int blue;
 } RGB;
 
-PixMapImage *pixmap_image_new                (char const *name, int width, int height, int max_color_val);
+typedef enum
+{
+    Text = 1,
+    Binary = 2
+} PixMapImageType;
+
+PixMapImage *pixmap_image_new                (char const *name, int width, int height, int max_color_val, PixMapImageType type);
 PixMapImage *pixmap_image_open               (char const *name);
-PixMapImage *pixmap_image_copy               (PixMapImage *image, char const *new_name);
+PixMapImage *pixmap_image_copy               (PixMapImage *image, char const *new_name, PixMapImageType type);
 RGB         *pixmap_image_get_pixel_array    (PixMapImage *image);
 void         pixmap_image_set_pixel          (PixMapImage *image,
                                               int x, int y,

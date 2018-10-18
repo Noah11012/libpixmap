@@ -3,6 +3,7 @@
 struct _PixMapImage
 {
     char *_file_name;
+    PixMapImageType _type;
     int _width;
     int _height;
     RGB *_pixels;
@@ -11,7 +12,7 @@ struct _PixMapImage
 
 static int get_metadata_value(FILE *file);
 
-PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_color_val)
+PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_color_val, PixMapImageType type)
 {
     PixMapImage *new_image = malloc(sizeof(*new_image));
 
@@ -30,6 +31,7 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
     }
 
     new_image->_file_name = name;
+    new_image->_type = type;
 
     return new_image;
 }
@@ -121,9 +123,9 @@ PixMapImage *pixmap_image_open(char const *name)
     return new_image;
 }
 
-PixMapImage *pixmap_image_copy(PixMapImage *image, char const *new_name)
+PixMapImage *pixmap_image_copy(PixMapImage *image, char const *new_name, PixMapImageType type)
 {
-    PixMapImage *copy_image = pixmap_image_new(new_name, image->_width, image->_height, image->_max_color_value);
+    PixMapImage *copy_image = pixmap_image_new(new_name, image->_width, image->_height, image->_max_color_value, type);
 
     if(!copy_image) return 0;
 
@@ -185,25 +187,52 @@ int pixmap_image_save(PixMapImage *image)
     if(!image_file)
         return -1;
 
-    fprintf(image_file, "%s\n%d %d\n%d\n", "P3", image->_width, image->_height, image->_max_color_value);
-
-    int i = 0;
-    int w = 0;
-    while(i < image->_width * image->_height)
+    if(image->_type == Text)
     {
-        if(w > 2)
-        {
-            fprintf(image_file, "%d %d %d\n",
-                    image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
-            w = 0;
-        } else {
-            fprintf(image_file, "%d %d %d ",
-                    image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
+        fprintf(image_file, "%s\n%d %d\n%d\n", "P3", image->_width, image->_height, image->_max_color_value);
 
+        int i = 0;
+        int w = 0;
+        while(i < image->_width * image->_height)
+        {
+            if(w > 2)
+            {
+                fprintf(image_file, "%d %d %d\n",
+                        image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
+                w = 0;
+            } else {
+                fprintf(image_file, "%d %d %d ",
+                        image->_pixels[i].red, image->_pixels[i].green, image->_pixels[i].blue);
+
+            }
+
+            w++;
+            i++;
+        }
+    } else if(image->_type == Binary)
+    {
+        unsigned char *temp_pixels = malloc(sizeof(unsigned char) * image->_width * image->_height * 3);
+        
+        if(!temp_pixels)
+        {
+            fclose(image_file);
+            return -1;
+        }
+        
+        for(int y = 0; y < image->_height; y++)
+        {
+            for(int x = 0; x < image->_width; x++)
+            {
+                temp_pixels[x + (y * image->_width)] = image->_pixels[x + (y * image->_width)].red;
+                temp_pixels[(x + (y * image->_width) + 1)] = image->_pixels[x + (y * image->_width)].green;
+                temp_pixels[(x + (y * image->_width) + 2)] = image->_pixels[x + (y * image->_width)].blue;
+            }
         }
 
-        w++;
-        i++;
+        fprintf(image_file, "%s\n%d %d\n%d\n", "P6", image->_width, image->_height, image->_max_color_value);
+        fwrite(temp_pixels, sizeof(unsigned char), image->_width * image->_height, image_file);
+
+        free(temp_pixels);
     }
 
     fclose(image_file);
@@ -230,9 +259,8 @@ void pixmap_image_foreach_pixel(PixMapImage *image,
 				void (*func)(RGB pixel, void *func_arg), void *arg)
 {
     int total_pixels = image->_width * image->_height;
-    for(int i = 0; i < total_pixels; i++) {
-	(*func)(image->_pixels[i], arg);
-    }
+    for(int i = 0; i < total_pixels; i++)
+	    (*func)(image->_pixels[i], arg);
 }
 
 void pixmap_image_close(PixMapImage *image)
@@ -245,7 +273,7 @@ void pixmap_image_close(PixMapImage *image)
 
 static int get_metadata_value(FILE *fin)
 {
-    int c, res;
+    int c, res = 0;
     int comment = 0;
     while((c = fgetc(fin)) != EOF)
     {
@@ -259,5 +287,6 @@ static int get_metadata_value(FILE *fin)
             break;
         }
     }
+
     return res;
 }
