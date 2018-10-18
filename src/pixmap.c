@@ -44,8 +44,12 @@ PixMapImage *pixmap_image_open(char const *name)
 
     PixMapImage *new_image = malloc(sizeof(*new_image));
 
-    if(!new_image) return 0;
-
+    if(!new_image)
+    {
+        fclose(image_file);
+        return 0;
+    }
+    
     new_image->_file_name = name;
 
     unsigned char sig[3];
