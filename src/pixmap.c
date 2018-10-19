@@ -11,8 +11,8 @@ struct _PixMapImage
 };
 
 static int get_metadata_value(FILE *file);
-static void read_ascii_pixel_values(PixMapImage *image, FILE *image_file);
-static void read_binary_pixel_values(PixMapImage *image, FILE *image_file);
+static int read_ascii_pixel_values(PixMapImage *image, FILE *image_file);
+static int read_binary_pixel_values(PixMapImage *image, FILE *image_file);
 
 PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_color_val, PixMapImageType type)
 {
@@ -83,19 +83,28 @@ PixMapImage *pixmap_image_open(char const *name)
         return 0;
     }
 
-    if(sig[1] == '3') {
-	read_ascii_pixel_values(new_image, image_file);
-    } else if(sig[1] == '6') {
-	read_binary_pixel_values(new_image, image_file);
-    } else {
-	fclose(image_file);
-	free(new_image);
-	return 0;
+    if(sig[1] == '3')
+    {
+	    if(read_ascii_pixel_values(new_image, image_file) < 0)
+            return 0;
     }
-    if(!new_image) {
-	fclose(image_file);
-	free(new_image);
-	return 0;
+    else if(sig[1] == '6')
+    {
+	    if(read_binary_pixel_values(new_image, image_file) < 0)
+            return 0;
+    }
+    else
+    {
+	    fclose(image_file);
+	    free(new_image);
+	    return 0;
+    }
+
+    if(!new_image)
+    {
+	    fclose(image_file);
+	    free(new_image);
+	    return 0;
     }
     
     fclose(image_file);
@@ -112,7 +121,7 @@ PixMapImage *pixmap_image_copy(PixMapImage *image, char const *new_name, PixMapI
     int i = 0;
     while(i < copy_image->_width * copy_image->_height)
     {
-	copy_image->_pixels[i] = image->_pixels[i];
+	    copy_image->_pixels[i] = image->_pixels[i];
         i++;
     }
 
@@ -248,9 +257,10 @@ void pixmap_image_close(PixMapImage *image)
     if(!image) return;
 
     if(image->_pixels) {
-      free(image->_pixels);
-      image->_pixels = NULL;
+        free(image->_pixels);
+        image->_pixels = NULL;
     }
+
     free(image);
 }
 
@@ -274,7 +284,7 @@ static int get_metadata_value(FILE *fin)
     return res;
 }
 
-static void read_ascii_pixel_values(PixMapImage *image, FILE *image_file)
+static int read_ascii_pixel_values(PixMapImage *image, FILE *image_file)
 {
     int c;
     RGB pixel;
@@ -286,55 +296,65 @@ static void read_ascii_pixel_values(PixMapImage *image, FILE *image_file)
     /* Read in the pixel values */
     while((c = fgetc(image_file)) != EOF)
     {
-    value_in = 0;
-    if(isdigit(c))
-	{
-	    ungetc(c, image_file);
-	    if(rgb_counter > 3)
-		{
-		    image->_pixels[file_pos] = pixel;
-		    file_pos++;
-		    rgb_counter = 1;
-		}
+        value_in = 0;
+        if(isdigit(c))
+        {
+            ungetc(c, image_file);
+            if(rgb_counter > 3)
+            {
+                image->_pixels[file_pos] = pixel;
+                file_pos++;
+                rgb_counter = 1;
+            }
 
-	    while((c = fgetc(image_file)) != EOF && c != ' ' && c != '\n')
-		{
-		    value_in *= 10;
-		    value_in += (c - '0');
-		}
+            while((c = fgetc(image_file)) != EOF && c != ' ' && c != '\n')
+            {
+                value_in *= 10;
+                value_in += (c - '0');
+            }
 
-	    if(rgb_counter == 1)
-		pixel.red = value_in;
-	    else if(rgb_counter == 2)
-		pixel.green = value_in;
-	    else if(rgb_counter == 3)
-		pixel.blue = value_in;
-            
-	    rgb_counter++;
-	}
+            if(rgb_counter == 1)
+                pixel.red = value_in;
+            else if(rgb_counter == 2)
+                pixel.green = value_in;
+            else if(rgb_counter == 3)
+                pixel.blue = value_in;
+                
+            rgb_counter++;
+        }
     }
-    if(file_pos > total_pixels) {
-	free(image);
-	image = NULL;
-	fclose(image_file);
-	return;
+
+    if(file_pos > total_pixels)
+    {
+        free(image);
+        image = NULL;
+        fclose(image_file);
+
+        return -1;
     }
+
+    return 0;
 }
 
-static void read_binary_pixel_values(PixMapImage *image, FILE *image_file)
+static int read_binary_pixel_values(PixMapImage *image, FILE *image_file)
 {
     int total_pixels = image->_width * image->_height;
     uint8_t value_in[3];
-    for(int i = 0; i < total_pixels; i++) {
-	if(fread(value_in, sizeof(uint8_t), 3, image_file)
-	   != sizeof(uint8_t) * 3) {
-	    fclose(image_file);
-	    free(image);
-	    image = NULL;
-	    return;
-	}
-	image->_pixels[i] = (RGB) {.red = ntohs(value_in[0]),
-				       .green = ntohs(value_in[1]),
-				       .blue = ntohs(value_in[2])};
+    for(int i = 0; i < total_pixels; i++)
+    {
+        if(fread(value_in, sizeof(uint8_t), 3, image_file) != sizeof(uint8_t) * 3)
+        {
+            fclose(image_file);
+            free(image);
+            image = NULL;
+
+            return -1;
+        }
+
+        image->_pixels[i] = (RGB) {.red = ntohs(value_in[0]),
+                                   .green = ntohs(value_in[1]),
+                                   .blue = ntohs(value_in[2])};
     }
+
+    return 0;
 }

@@ -40,3 +40,22 @@
 ```
   This allows us to control what the user can access directly and what
   they must access using functions that allow reading/writing of the data.
+
+  Braces should be on their own lines.
+
+  Example:
+
+  ```
+  if(true) {
+
+  }
+  ```
+
+  becomes
+
+  ```
+  if(true)
+  {
+
+  }
+  ```

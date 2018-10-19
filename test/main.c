@@ -82,19 +82,22 @@ int test3()
 int test4(void)
 {
     PixMapImage *image = pixmap_image_open("test_binary.ppm");
+
     if(!image)
-	return -1;
+	    return -1;
 
     PixMapImage *image_out = pixmap_image_copy(image, "test_binary2.ppm", Binary);
-    if(!image_out) {
-	return -1;
-    }
+    
+    if(!image_out)
+	    return -1;
+    
 
     if(pixmap_image_save(image_out) != 0)
-	return -1;
+	    return -1;
 
     pixmap_image_close(image);
     pixmap_image_close(image_out);
+    
     return 0;
 }
 
