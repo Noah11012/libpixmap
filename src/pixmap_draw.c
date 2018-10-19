@@ -26,7 +26,7 @@ int pixmap_image_draw_line(PixMapImage *image, RGB *rgb, int x1, int y1, int x2,
 	    pixmap_image_set_pixel_by_rgb(image, x, round(y), rgb, &status);
 
 	    if(status)
-		return -1;
+		    return -1;
 	}
     /* Set the last pixel */
     pixmap_image_set_pixel_by_rgb(image, x2, y2, rgb, &status);
