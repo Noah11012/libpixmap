@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 ## Documentation
 #### pixmap_image_new(char const *name, int width, int height, int max_color_val, PixMapImageType type)
 
-Creates a new `PixMapImage` at the path `name` and with the dimensions of `width` x `height` and the maximum color value of `max_color_val` with the PPM image type of `type. `type` can either be `Text` or `Binary`. `max_color_val` is clamped at 255. Free with `pixmap_image_close()`. Returns 0 on failure.
+Creates a new `PixMapImage` at the path `name` and with the dimensions of `width` x `height` and the maximum color value of `max_color_val` with the PPM image type of `type`. `type` can either be `Text` or `Binary`. `max_color_val` is clamped at 255. Free with `pixmap_image_close()`. Returns 0 on failure.
 
 #### pixmap_image_close(PixMapImage *image)
 
