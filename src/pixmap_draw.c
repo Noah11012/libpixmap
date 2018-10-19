@@ -1,6 +1,6 @@
 #include "pixmap_draw.h"
 
-int pixmap_draw_line(PixMapImage *image, RGB *rgb, int x1, int y1, int x2, int y2)
+int pixmap_image_draw_line(PixMapImage *image, RGB *rgb, int x1, int y1, int x2, int y2)
 {
     /* Make sure the line is drawn ascending in x so the loop doesn't go
        on forever */
@@ -34,4 +34,55 @@ int pixmap_draw_line(PixMapImage *image, RGB *rgb, int x1, int y1, int x2, int y
 	return -1;
 
     return 0;
+}
+
+int pixmap_image_draw_rectangle_by_points(PixMapImage *image, RGB *rgb,
+				    int x1, int y1, int x2, int y2)
+{
+    /* Start from lowest coordinates */
+    if(x1 > x2)
+	{
+	int temp = x1;
+	x1 = x2;
+	x2 = temp;
+    }
+
+    if(y1 > y2)
+	{
+	int temp = y1;
+	y1 = y2;
+	y2 = temp;
+    }
+
+    /* Draw horizontal lines */
+    int status = 0;
+    for(int x = x1; x <= x2; x++)
+	{
+	    pixmap_image_set_pixel_by_rgb(image, x, y1, rgb, &status);
+	    if(status)
+	       return -1;
+	    pixmap_image_set_pixel_by_rgb(image, x, y2, rgb, &status);
+	    if(status)
+		return -1;
+	}
+
+    /* Draw vertical lines */
+    for(int y = y1; y <= y2; y++)
+	{
+	    pixmap_image_set_pixel_by_rgb(image, x1, y, rgb, &status);
+	    if(status)
+		return -1;
+	    pixmap_image_set_pixel_by_rgb(image, x2, y, rgb, &status);
+	    if(status)
+		return -1;
+	}
+    return 0;
+}
+
+pixmap_image_draw_rectangle_by_size(PixMapImage *image, RGB *rgb, int x, int y,
+				    int dx, int dy)
+{
+    int x2 = x + dx;
+    int y2 = y + dy;
+    return pixmap_image_draw_rectangle_by_points(image, rgb, x, y, x2, y2);
 }
