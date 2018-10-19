@@ -2,6 +2,19 @@
 
 int pixmap_draw_line(PixMapImage *image, RGB *rgb, int x1, int y1, int x2, int y2)
 {
+    /* Make sure the line is drawn ascending in x so the loop doesn't go
+       on forever */
+    if(x1 > x2)
+    {
+	int temp = x1;
+	x1 = x2;
+	x2 = temp;
+
+        temp = y1;
+	y1 = y2;
+	y2 = temp;
+    }
+    
     int x = x1;
     double y = y1;
     double slope = (double) (y2 - y1) / (x2 - x1);
