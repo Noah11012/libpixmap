@@ -1,1 +1,1 @@
-add_library(libpixmapimage SHARED pixmap.c)
+add_library(libpixmapimage SHARED pixmap.c pixmap_draw.c)
