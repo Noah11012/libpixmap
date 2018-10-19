@@ -207,18 +207,19 @@ int pixmap_image_save(PixMapImage *image)
             fclose(image_file);
             return -1;
         }
-        
+
+	int i = 0;
         for(int y = 0; y < image->_height; y++)
         {
             for(int x = 0; x < image->_width; x++)
             {
-                temp_pixels[x + (y * image->_width)] = (uint8_t) image->_pixels[x + (y * image->_width)].red;
-                temp_pixels[(x + (y * image->_width) + sizeof(uint8_t))] = (uint8_t) image->_pixels[x + (y * image->_width)].green;
-                temp_pixels[(x + (y * image->_width) + (sizeof(uint8_t) * 2))] = (uint8_t) image->_pixels[x + (y * image->_width)].blue;
+                temp_pixels[i++] = (uint8_t) image->_pixels[x + (y * image->_width)].red;
+                temp_pixels[i++] = (uint8_t) image->_pixels[x + (y * image->_width)].green;
+                temp_pixels[i++] = (uint8_t) image->_pixels[x + (y * image->_width)].blue;
             }
         }
 
-        fprintf(image_file, "%s\n%d %d\n%d\n", "P6", image->_width, image->_height, image->_max_color_value);
+        fprintf(image_file, "%s\n%d %d\n%d", "P6", image->_width, image->_height, image->_max_color_value);
         fwrite(temp_pixels, sizeof(uint8_t), image->_width * image->_height * 3, image_file);
 
         free(temp_pixels);
