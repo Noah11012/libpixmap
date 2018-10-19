@@ -312,7 +312,7 @@ static void read_ascii_pixel_values(PixMapImage *image, FILE *image_file)
     }
     if(file_pos > total_pixels) {
 	free(image);
-	image = NULL
+	image = NULL;
 	fclose(image_file);
 	return;
     }
@@ -320,11 +320,11 @@ static void read_ascii_pixel_values(PixMapImage *image, FILE *image_file)
 
 static void read_binary_pixel_values(PixMapImage *image, FILE *image_file)
 {
-    int total_pixels = width * height;
+    int total_pixels = image->_width * image->_height;
     unsigned char value_in[3];
     for(int i = 0; i < total_pixels; i++) {
-	fread(value_in, sizeof(unsigned char), 3, image_file);
-	if(!value_in) {
+	if(fread(value_in, sizeof(unsigned char), 3, image_file)
+	   != sizeof(unsigned char) * 3) {
 	    fprintf(stderr, "ERROR invalid image file\n");
 	    fclose(image_file);
 	    free(image);
@@ -335,3 +335,4 @@ static void read_binary_pixel_values(PixMapImage *image, FILE *image_file)
 				       .green = ntohs(value_in[1]),
 				       .blue = ntohs(value_in[2])};
     }
+}
