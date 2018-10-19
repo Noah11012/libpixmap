@@ -101,6 +101,24 @@ int test4(void)
     return 0;
 }
 
+int test5()
+{
+    PixMapImage *image = pixmap_image_new("test_image.ppm", 100, 100, 255, Text);
+
+    if(!image)
+        return -1;
+    
+    PixMapImage *copy_image = pixmap_image_copy(image, "test_image_copy.ppm", Text);
+
+    if(!copy_image)
+        return -1;
+    
+    if(pixmap_image_get_pixel_array(image) == pixmap_image_get_pixel_array(copy_image))
+        return -1;
+    
+    return 0;
+}
+
 int main()
 {
     if(test1() != 0)
@@ -114,6 +132,9 @@ int main()
 
     if(test4() != 0)
 	    return -1;
+    
+    if(test5() != 0)
+        return -1;
     
     return 0;
 }

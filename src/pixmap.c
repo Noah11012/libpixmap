@@ -18,7 +18,8 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
 {
     PixMapImage *new_image = malloc(sizeof(*new_image));
 
-    if(!new_image) return 0;
+    if(!new_image)
+        return 0;
 
     new_image->_width = width;
     new_image->_height = height;
@@ -41,10 +42,9 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
 PixMapImage *pixmap_image_open(char const *name)
 {
     FILE *image_file = fopen(name, "r+");
+
     if(!image_file)
-    {
         return 0;
-    }
 
     PixMapImage *new_image = malloc(sizeof(*new_image));
 
@@ -342,7 +342,9 @@ static int read_binary_pixel_values(PixMapImage *image, FILE *image_file)
     uint8_t value_in[3];
     for(int i = 0; i < total_pixels; i++)
     {
-        if(fread(value_in, sizeof(uint8_t), 3, image_file) != sizeof(uint8_t) * 3)
+        fread(value_in, sizeof(uint8_t), 3, image_file);
+
+        if(ferror(image_file))
         {
             fclose(image_file);
             free(image);
