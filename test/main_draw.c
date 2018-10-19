@@ -9,7 +9,7 @@ int test1()
     
     RGB red = {255, 0, 0};
 
-    if(pixmap_draw_line(image, &red, 10, 10, 50, 50) < 0)
+    if(pixmap_image_draw_line(image, &red, 10, 10, 50, 50) < 0)
         return -1;
     
     pixmap_image_save(image);
