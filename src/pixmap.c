@@ -212,14 +212,14 @@ int pixmap_image_save(PixMapImage *image)
         {
             for(int x = 0; x < image->_width; x++)
             {
-                temp_pixels[x + (y * image->_width)] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].red);
-                temp_pixels[(x + (y * image->_width) + sizeof(uint8_t))] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].green);
-                temp_pixels[(x + (y * image->_width) + (sizeof(uint8_t) * 2))] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].blue);
+                temp_pixels[x + (y * image->_width)] = (uint8_t) image->_pixels[x + (y * image->_width)].red;
+                temp_pixels[(x + (y * image->_width) + sizeof(uint8_t))] = (uint8_t) image->_pixels[x + (y * image->_width)].green;
+                temp_pixels[(x + (y * image->_width) + (sizeof(uint8_t) * 2))] = (uint8_t) image->_pixels[x + (y * image->_width)].blue;
             }
         }
 
         fprintf(image_file, "%s\n%d %d\n%d\n", "P6", image->_width, image->_height, image->_max_color_value);
-        fwrite(temp_pixels, sizeof(uint8_t), image->_width * image->_height, image_file);
+        fwrite(temp_pixels, sizeof(uint8_t), image->_width * image->_height * 3, image_file);
 
         free(temp_pixels);
     }
@@ -351,9 +351,9 @@ static int read_binary_pixel_values(PixMapImage *image, FILE *image_file)
             return -1;
         }
 
-        image->_pixels[i] = (RGB) {.red = ntohs(value_in[0]),
-                                   .green = ntohs(value_in[1]),
-                                   .blue = ntohs(value_in[2])};
+        image->_pixels[i] = (RGB) {.red = (int) value_in[0],
+                                   .green = (int) value_in[1],
+                                   .blue = (int) value_in[2]};
     }
 
     return 0;

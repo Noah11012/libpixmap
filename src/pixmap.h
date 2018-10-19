@@ -5,9 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdint.h>		/* uint8_t */
-#include <arpa/inet.h>		/* htons, ntohs (Linux only)
-				   maybe add conditional compilation
-				   for other platforms */
+
 
 typedef struct _PixMapImage PixMapImage;
 
