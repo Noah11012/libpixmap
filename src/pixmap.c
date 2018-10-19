@@ -247,7 +247,10 @@ void pixmap_image_close(PixMapImage *image)
 {
     if(!image) return;
 
-    free(image->_pixels);
+    if(image->_pixels) {
+      free(image->_pixels);
+      image->_pixels = NULL;
+    }
     free(image);
 }
 
