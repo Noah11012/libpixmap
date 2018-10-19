@@ -325,7 +325,6 @@ static void read_binary_pixel_values(PixMapImage *image, FILE *image_file)
     for(int i = 0; i < total_pixels; i++) {
 	if(fread(value_in, sizeof(unsigned char), 3, image_file)
 	   != sizeof(unsigned char) * 3) {
-	    fprintf(stderr, "ERROR invalid image file\n");
 	    fclose(image_file);
 	    free(image);
 	    image = NULL;
