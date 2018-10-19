@@ -112,7 +112,7 @@ PixMapImage *pixmap_image_copy(PixMapImage *image, char const *new_name, PixMapI
     int i = 0;
     while(i < copy_image->_width * copy_image->_height)
     {
-        copy_image->_pixels[i] = image->_pixels[i];
+	copy_image->_pixels[i] = image->_pixels[i];
         i++;
     }
 
@@ -191,7 +191,7 @@ int pixmap_image_save(PixMapImage *image)
         }
     } else if(image->_type == Binary)
     {
-        unsigned char *temp_pixels = malloc(sizeof(unsigned char) * image->_width * image->_height * 3);
+        uint8_t *temp_pixels = malloc(sizeof(uint8_t) * image->_width * image->_height * 3);
         
         if(!temp_pixels)
         {
@@ -203,14 +203,14 @@ int pixmap_image_save(PixMapImage *image)
         {
             for(int x = 0; x < image->_width; x++)
             {
-                temp_pixels[x + (y * image->_width)] = htons(image->_pixels[x + (y * image->_width)].red);
-                temp_pixels[(x + (y * image->_width) + 1)] = htons(image->_pixels[x + (y * image->_width)].green);
-                temp_pixels[(x + (y * image->_width) + 2)] = htons(image->_pixels[x + (y * image->_width)].blue);
+                temp_pixels[x + (y * image->_width)] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].red);
+                temp_pixels[(x + (y * image->_width) + 1)] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].green);
+                temp_pixels[(x + (y * image->_width) + 2)] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].blue);
             }
         }
 
         fprintf(image_file, "%s\n%d %d\n%d\n", "P6", image->_width, image->_height, image->_max_color_value);
-        fwrite(temp_pixels, sizeof(unsigned char), image->_width * image->_height, image_file);
+        fwrite(temp_pixels, sizeof(uint8_t), image->_width * image->_height, image_file);
 
         free(temp_pixels);
     }
@@ -324,7 +324,7 @@ static void read_binary_pixel_values(PixMapImage *image, FILE *image_file)
     unsigned char value_in[3];
     for(int i = 0; i < total_pixels; i++) {
 	if(fread(value_in, sizeof(unsigned char), 3, image_file)
-	   != sizeof(unsigned char) * 3) {
+	   != sizeof(uint8_t) * 3) {
 	    fclose(image_file);
 	    free(image);
 	    image = NULL;

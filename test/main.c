@@ -52,13 +52,15 @@ int test2()
 
     if(status != 0)
         return -1;
-    
+
+    pixmap_image_close(image_in);
+    pixmap_image_close(image_out);
     return 0;
 }
 
 int test3()
 {
-    PixMapImage *image = pixmap_image_new("test2.ppm", 100, 100, 255, Binary);
+    PixMapImage *image = pixmap_image_new("test_binary.ppm", 100, 100, 255, Binary);
 
     if(!image)
         return -1;
@@ -67,12 +69,32 @@ int test3()
     {
         for(int x = 0; x < pixmap_image_get_width(image); x++)
         {
-            pixmap_image_set_pixel(image, y, x, 255, 0, 0, 0);
+            pixmap_image_set_pixel(image, y, x, 255, y, x, NULL);
         }
     }
 
     pixmap_image_save(image);
 
+    pixmap_image_close(image);
+    return 0;
+}
+
+int test4(void)
+{
+    PixMapImage *image = pixmap_image_open("test_binary.ppm");
+    if(!image)
+	return -1;
+
+    PixMapImage *image_out = pixmap_image_copy(image, "test_binary2.ppm", Binary);
+    if(!image_out) {
+	return -1;
+    }
+
+    if(pixmap_image_save(image_out) != 0)
+	return -1;
+
+    pixmap_image_close(image);
+    pixmap_image_close(image_out);
     return 0;
 }
 
@@ -86,6 +108,9 @@ int main()
     
     if(test3() != 0)
         return -1;
+
+    if(test4() != 0)
+	return -1;
     
     return 0;
 }
