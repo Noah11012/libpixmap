@@ -57,7 +57,7 @@ PixMapImage *pixmap_image_open(char const *name)
     unsigned char sig[3];
     fread(sig, sizeof(unsigned char), 2, image_file);
 
-    if(!(sig[0] == 'P' && sig[1] == '3'))
+    if(sig[0] != 'P')
     {
         fclose(image_file);
         free(new_image);
@@ -81,43 +81,50 @@ PixMapImage *pixmap_image_open(char const *name)
         return 0;
     }
 
-    int c;
-    RGB pixel;
-    unsigned int value_in = 0;
-    int rgb_counter = 1;
-    int file_pos = 0;
+    if(sig[1] == '3') {
+	int c;
+	RGB pixel;
+	unsigned int value_in = 0;
+	int rgb_counter = 1;
+	int file_pos = 0;
     
-    /* Read in the pixel values */
-    while((c = fgetc(image_file)) != EOF)
-    {
-        value_in = 0;
-        if(isdigit(c))
-        {
-            ungetc(c, image_file);
-            if(rgb_counter > 3)
-            {
-                new_image->_pixels[file_pos] = pixel;
-                file_pos++;
-                rgb_counter = 1;
-            }
+	/* Read in the pixel values */
+	while((c = fgetc(image_file)) != EOF)
+	    {
+		value_in = 0;
+		if(isdigit(c))
+		    {
+			ungetc(c, image_file);
+			if(rgb_counter > 3)
+			    {
+				new_image->_pixels[file_pos] = pixel;
+				file_pos++;
+				rgb_counter = 1;
+			    }
 
-            while((c = fgetc(image_file)) != EOF && c != ' ' && c != '\n')
-            {
-                value_in *= 10;
-                value_in += (c - '0');
-            }
+			while((c = fgetc(image_file)) != EOF && c != ' ' && c != '\n')
+			    {
+				value_in *= 10;
+				value_in += (c - '0');
+			    }
 
-            if(rgb_counter == 1)
-                pixel.red = value_in;
-            else if(rgb_counter == 2)
-                pixel.green = value_in;
-            else if(rgb_counter == 3)
-                pixel.blue = value_in;
+			if(rgb_counter == 1)
+			    pixel.red = value_in;
+			else if(rgb_counter == 2)
+			    pixel.green = value_in;
+			else if(rgb_counter == 3)
+			    pixel.blue = value_in;
             
-            rgb_counter++;
-        }
+			rgb_counter++;
+		    }
+	    }
+    } else if(sig[1] == '6') {
+	/* TODO write binary read loop*/
+    } else {
+	fclose(image_file);
+	free(new_image);
+	return 0;
     }
-
     fclose(image_file);
 
     return new_image;
@@ -223,9 +230,9 @@ int pixmap_image_save(PixMapImage *image)
         {
             for(int x = 0; x < image->_width; x++)
             {
-                temp_pixels[x + (y * image->_width)] = image->_pixels[x + (y * image->_width)].red;
-                temp_pixels[(x + (y * image->_width) + 1)] = image->_pixels[x + (y * image->_width)].green;
-                temp_pixels[(x + (y * image->_width) + 2)] = image->_pixels[x + (y * image->_width)].blue;
+                temp_pixels[x + (y * image->_width)] = htons(image->_pixels[x + (y * image->_width)].red);
+                temp_pixels[(x + (y * image->_width) + 1)] = htons(image->_pixels[x + (y * image->_width)].green);
+                temp_pixels[(x + (y * image->_width) + 2)] = htons(image->_pixels[x + (y * image->_width)].blue);
             }
         }
 
