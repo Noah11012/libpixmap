@@ -69,7 +69,7 @@ int test3()
     {
         for(int x = 0; x < pixmap_image_get_width(image); x++)
         {
-            pixmap_image_set_pixel(image, y, x, 255, y, x, NULL);
+            pixmap_image_set_pixel(image, x, y, 255, y, x, NULL);
         }
     }
 
@@ -122,16 +122,16 @@ int test5()
 int main()
 {
     if(test1() != 0)
-        return -1;
+        return 1;
 
     if(test2() != 0)
-	    return -1;
+	    return 2;
     
     if(test3() != 0)
-        return -1;
+        return 3;
 
     if(test4() != 0)
-	    return -1;
+	    return 4;
     
     if(test5() != 0)
         return -1;
