@@ -119,7 +119,14 @@ PixMapImage *pixmap_image_open(char const *name)
 		    }
 	    }
     } else if(sig[1] == '6') {
-	/* TODO write binary read loop*/
+	int total_pixels = width * height;
+	unsigned char value_in[3];
+	for(int i = 0; i < total_pixels; i++) {
+	    fread(value_in, sizeof(unsigned char), 3, image_file);
+	    new_image->_pixels[i] = (RGB) {.red = ntohs(value_in[0]),
+					   .green = ntohs(value_in[1]),
+					   .blue = ntohs(value_in[2])};
+	}
     } else {
 	fclose(image_file);
 	free(new_image);
