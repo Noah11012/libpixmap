@@ -6,13 +6,13 @@ int pixmap_image_draw_line(PixMapImage *image, RGB *rgb, int x1, int y1, int x2,
        on forever */
     if(x1 > x2)
     {
-	int temp = x1;
-	x1 = x2;
-	x2 = temp;
+        int temp = x1;
+        x1 = x2;
+        x2 = temp;
 
         temp = y1;
-	y1 = y2;
-	y2 = temp;
+        y1 = y2;
+        y2 = temp;
     }
     
     int x = x1;
@@ -42,16 +42,16 @@ int pixmap_image_draw_rectangle_by_points(PixMapImage *image, RGB *rgb,
     /* Start from lowest coordinates */
     if(x1 > x2)
 	{
-	int temp = x1;
-	x1 = x2;
-	x2 = temp;
+        int temp = x1;
+        x1 = x2;
+        x2 = temp;
     }
 
     if(y1 > y2)
 	{
-	int temp = y1;
-	y1 = y2;
-	y2 = temp;
+        int temp = y1;
+        y1 = y2;
+        y2 = temp;
     }
 
     /* Draw horizontal lines */
@@ -70,19 +70,24 @@ int pixmap_image_draw_rectangle_by_points(PixMapImage *image, RGB *rgb,
     for(int y = y1; y <= y2; y++)
 	{
 	    pixmap_image_set_pixel_by_rgb(image, x1, y, rgb, &status);
+
 	    if(status)
-		return -1;
+		    return -1;
+
 	    pixmap_image_set_pixel_by_rgb(image, x2, y, rgb, &status);
+
 	    if(status)
-		return -1;
+		    return -1;
 	}
+
     return 0;
 }
 
 pixmap_image_draw_rectangle_by_size(PixMapImage *image, RGB *rgb, int x, int y,
-				    int dx, int dy)
+				                    int dx, int dy)
 {
     int x2 = x + dx;
     int y2 = y + dy;
+
     return pixmap_image_draw_rectangle_by_points(image, rgb, x, y, x2, y2);
 }
