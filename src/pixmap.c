@@ -204,8 +204,8 @@ int pixmap_image_save(PixMapImage *image)
             for(int x = 0; x < image->_width; x++)
             {
                 temp_pixels[x + (y * image->_width)] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].red);
-                temp_pixels[(x + (y * image->_width) + 1)] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].green);
-                temp_pixels[(x + (y * image->_width) + 2)] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].blue);
+                temp_pixels[(x + (y * image->_width) + sizeof(uint8_t))] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].green);
+                temp_pixels[(x + (y * image->_width) + (sizeof(uint8_t) * 2))] = (uint8_t) htons(image->_pixels[x + (y * image->_width)].blue);
             }
         }
 
@@ -324,9 +324,9 @@ static void read_ascii_pixel_values(PixMapImage *image, FILE *image_file)
 static void read_binary_pixel_values(PixMapImage *image, FILE *image_file)
 {
     int total_pixels = image->_width * image->_height;
-    unsigned char value_in[3];
+    uint8_t value_in[3];
     for(int i = 0; i < total_pixels; i++) {
-	if(fread(value_in, sizeof(unsigned char), 3, image_file)
+	if(fread(value_in, sizeof(uint8_t), 3, image_file)
 	   != sizeof(uint8_t) * 3) {
 	    fclose(image_file);
 	    free(image);
