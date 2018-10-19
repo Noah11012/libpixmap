@@ -21,7 +21,7 @@ int pixmap_draw_line(PixMapImage *image, RGB *rgb, int x1, int y1, int x2, int y
 
     int status = 0;
 
-    for(; x1 != x2; x += 1, y *= slope)
+    for(; x != x2; x += 1, y += slope)
 	{
 	    pixmap_image_set_pixel_by_rgb(image, x, round(y), rgb, &status);
 
