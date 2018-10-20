@@ -102,13 +102,18 @@ int pixmap_image_draw_triangle(PixMapImage *image, RGB *rgb, int x1, int y1,
     /* This will end up drawing the three vertex pixels twice each,
        but it's a small amount of overhead */
     int status = pixmap_image_draw_line(image, rgb, x1, x2, y1, y2);
+
     if(status)
-	return -1;
+	    return -1;
     status = pixmap_image_draw_line(image, rgb, x2, y2, x3, y3);
+    
     if(status)
-	return -1;
+	    return -1;
+    
     status - pixmap_image_draw_line(image, rgb, x3, y3, x1, y1);
+    
     if(status)
-	return -1;
+	    return -1;
+    
     return 0;
 }
