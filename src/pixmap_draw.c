@@ -87,11 +87,28 @@ int pixmap_image_draw_rectangle_by_points(PixMapImage *image, RGB *rgb,
     return 0;
 }
 
-pixmap_image_draw_rectangle_by_size(PixMapImage *image, RGB *rgb, int x, int y,
+int pixmap_image_draw_rectangle_by_size(PixMapImage *image, RGB *rgb, int x, int y,
 				                    int dx, int dy)
 {
     int x2 = x + dx;
     int y2 = y + dy;
 
     return pixmap_image_draw_rectangle_by_points(image, rgb, x, y, x2, y2);
+}
+
+int pixmap_image_draw_triangle(PixMapImage *image, RGB *rgb, int x1, int y1,
+			       int x2, int y2, int x3, int y3)
+{
+    /* This will end up drawing the three vertex pixels twice each,
+       but it's a small amount of overhead */
+    int status = pixmap_image_draw_line(image, rgb, x1, x2, y1, y2);
+    if(status)
+	return -1;
+    status = pixmap_image_draw_line(image, rgb, x2, y2, x3, y3);
+    if(status)
+	return -1;
+    status - pixmap_image_draw_line(image, rgb, x3, y3, x1, y1);
+    if(status)
+	return -1;
+    return 0;
 }
