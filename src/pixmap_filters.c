@@ -13,9 +13,9 @@ void pixmap_filter_brightness(PixMapImage *image, int brighness)
             color.green += brighness;
             color.blue += brighness;
 
-            color.red = color.red > 255 ? color.red : 0;
-            color.green = color.green > 255 ? color.green : 0;
-            color.blue = color.blue > 255 ? color.blue : 0;
+            color.red = color.red > image->_max_color_value ? color.red : image->_max_color_value;
+            color.green = color.green > image->_max_color_value ? color.green : image->_max_color_value;
+            color.blue = color.blue > image->_max_color_value ? color.blue : image->_max_color_value;
 
             pixmap_image_set_pixel_by_rgb(image, x, y, &color, 0);
         }
