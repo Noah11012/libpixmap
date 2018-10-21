@@ -1,3 +1,5 @@
+- Indentation is four spaces.
+
 - If the body of an if statement is only one line, omit the braces.
   Example:
 ```  

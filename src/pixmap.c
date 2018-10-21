@@ -89,18 +89,18 @@ PixMapImage *pixmap_image_open(char const *name)
 
     if(sig[1] == '3')
     {
-	if(read_ascii_pixel_values(new_image, image_file) < 0)
-	    return 0;
+        if(read_ascii_pixel_values(new_image, image_file) < 0)
+            return 0;
     }
     else if(sig[1] == '6' && new_image->_max_color_value <= 255)
     {
-	if(read_8_bit_binary_pixel_values(new_image, image_file) < 0)
-	    return 0;
+        if(read_8_bit_binary_pixel_values(new_image, image_file) < 0)
+            return 0;
     }
     else if(sig[1] == '6' && new_image->_max_color_value > 255)
     {
-	if(read_16_bit_binary_pixel_values(new_image, image_file) < 0)
-	    return 0;
+        if(read_16_bit_binary_pixel_values(new_image, image_file) < 0)
+            return 0;
     }
     else
     {
@@ -157,7 +157,9 @@ void pixmap_image_set_pixel(PixMapImage *image, int x, int y, int red, int green
 
     RGB color = { red, green, blue };
 
-    if(error) *error = 0;
+    if(error)
+        *error = 0;
+
     image->_pixels[x + (y * image->_width)] = color;
 }
 
@@ -186,11 +188,11 @@ int pixmap_image_save(PixMapImage *image)
         return -1;
 
     if(image->_type == Text)
-	write_ascii_file(image, image_file);
+	    write_ascii_file(image, image_file);
     else if(image->_type == Binary && image->_max_color_value <= 255)
-	write_8_bit_binary_file(image, image_file);
+	    write_8_bit_binary_file(image, image_file);
     else if(image->_type == Binary && image->_max_color_value > 255)
-	write_16_bit_binary_file(image, image_file);
+	    write_16_bit_binary_file(image, image_file);
 
     fclose(image_file);
 
