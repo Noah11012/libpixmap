@@ -47,10 +47,9 @@ PixMapComponents *pixmap_filter_split_into_components(PixMapImage *image)
     res->blue = pixmap_image_new(NULL, width, height, max_value, type);
 
     if(!res->red || !res->green || !res->blue)
-      return NULL
+      return NULL;
 
-    int *error = malloc(sizeof(int));
-    *error = 0;
+    int error = 0;
     for(int y = 0; y < height; y++)
     {
 	for(int x = 0; x < width; x++)
@@ -60,7 +59,7 @@ PixMapComponents *pixmap_filter_split_into_components(PixMapImage *image)
 	    pixmap_image_set_pixel(res->green, x, y, 0, pixel.green, 0, error);
 	    pixmap_image_set_pixel(res->blue, x, y, 0, 0, pixel.blue, error);
 
-	    if(*error)
+	    if(error)
 	    {
 		pixmap_image_close(res->red);
 		pixmap_image_close(res->green);
@@ -69,7 +68,6 @@ PixMapComponents *pixmap_filter_split_into_components(PixMapImage *image)
 	    }
 	}
     }
-    free(error);
     return res;
 }
 
