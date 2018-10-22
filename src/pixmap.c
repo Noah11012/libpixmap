@@ -179,6 +179,9 @@ RGB pixmap_image_get_pixel(PixMapImage *image, int x, int y)
 
 int pixmap_image_save(PixMapImage *image)
 {
+    if(!image->_file_name)
+	return -1;
+
     FILE *image_file = fopen(image->_file_name, "w");
 
     if(!image_file)
