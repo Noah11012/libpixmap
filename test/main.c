@@ -1,4 +1,5 @@
 #include "../src/pixmap.h"
+#include "../src/pixmap_filters.h"
 
 int test1()
 {
@@ -119,22 +120,48 @@ int test5()
     return 0;
 }
 
+int test6()
+{
+    PixMapImage *image = pixmap_image_new("test6_image.ppm", 50, 50, 256, Text);
+    if(!image)
+	return -1;
+    int *error = NULL;
+
+    for(int y = 0; y < 50; y++)
+    {
+	for(int x = 0; x < 50; x++)
+	{
+	    pixmap_image_set_pixel(image, x, y, x, y, 8, error);
+	    if(error)
+	      return -1;
+	}
+    }
+
+    pixmap_filter_brightness(image, -9, error);
+    if(error)
+      return -1;
+    pixmap_image_save(image);
+}
+
 int main()
 {
     if(test1() != 0)
         return 1;
 
     if(test2() != 0)
-	    return 2;
+	return 2;
     
     if(test3() != 0)
         return 3;
 
     if(test4() != 0)
-	    return 4;
+	return 4;
     
     if(test5() != 0)
-        return -1;
-    
+        return 5;
+
+    if(test6() != 0)
+	return 6;
+
     return 0;
 }

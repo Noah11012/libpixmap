@@ -1,14 +1,14 @@
 #include "pixmap_filters.h"
 
-void pixmap_filter_brightness(PixMapImage *image, int brighness)
+void pixmap_filter_brightness(PixMapImage *image, int brightness, int *error)
 {
     int total_x = pixmap_image_get_width(image);
     int total_y = pixmap_image_get_height(image);
     int max_value = pixmap_image_get_max_color_value(image);
 
-    for(int x = 0; x < total_x; x++)
+    for(int y = 0; y < total_y; y++)
     {
-	for(int y = 0; y < total_y; y++)
+	for(int x = 0; x < total_x; x++)
 	{
 	    RGB pixel = pixmap_image_get_pixel(image, x, y);
 	    pixel.red += brightness;
@@ -24,6 +24,8 @@ void pixmap_filter_brightness(PixMapImage *image, int brighness)
 
 	    pixel.blue = pixel.blue > max_value ? max_value :
 		pixel.blue < 0 ? 0 : pixel.blue;
+
+	    pixmap_image_set_pixel_by_rgb(image, x, y, &pixel, error);
 	}
     }
 }
