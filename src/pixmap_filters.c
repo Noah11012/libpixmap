@@ -61,8 +61,14 @@ PixMapComponents *pixmap_filter_split_into_components(PixMapImage *image)
 	    pixmap_image_set_pixel(res->blue, x, y, 0, 0, pixel.blue, error);
 
 	    if(*error)
+	    {
+		pixmap_image_close(res->red);
+		pixmap_image_close(res->green);
+		pixmap_image_close(res->blue);
 		return NULL;
+	    }
 	}
     }
+    free(error);
     return res;
 }
