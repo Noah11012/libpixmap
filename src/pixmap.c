@@ -27,7 +27,7 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height, int max_c
 
     new_image->_width = width;
     new_image->_height = height;
-    new_image->_max_color_value = max_color_val <= 255 ? max_color_val : 255;
+    new_image->_max_color_value = max_color_val <= 65535 ? max_color_val : 65535;
 
     new_image->_pixels = malloc(sizeof(RGB) * (new_image->_width * new_image->_height));
 
