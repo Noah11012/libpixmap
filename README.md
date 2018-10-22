@@ -17,16 +17,18 @@ If you want to change the install prefix, enter the following:
 
 `make`
 
-Because this library only contains a header and source file, you can simply include pixmap.h and add pixmap.c to the list of files needing to be built.
+This library contains one header and one source file. Two headers and two source files that are optional but provide filters and drawing capabilities.
 
 Example:
 
-`clang -o program main.c another_file.c pixmap.c`
+`clang -o program main.c another_file.c pixmap.c pixmap_filters.c pixmap_draw.c`
 
 In main.c:
 
 ```c
 #include "pixmap.h"
+#include "pixmap_filters.h"
+#include "pixmap_draw.h"
 
 int main(int argc, char *argv[])
 {
