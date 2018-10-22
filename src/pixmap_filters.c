@@ -72,3 +72,12 @@ PixMapComponents *pixmap_filter_split_into_components(PixMapImage *image)
     free(error);
     return res;
 }
+
+void pixmap_filter_close_components(PixMapComponents *components)
+{
+    pixmap_image_close(components->red);
+    pixmap_image_close(components->green);
+    pixmap_image_close(components->blue);
+
+    free(components);
+}
