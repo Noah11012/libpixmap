@@ -29,3 +29,37 @@ void pixmap_filter_brightness(PixMapImage *image, int brightness, int *error)
 	}
     }
 }
+
+PixMapComponents *pixmap_filter_split_into_components(PixMapImage *image)
+{
+    int width = pixmap_image_get_width(image);
+    int height = pixmap_image_get_height(image);
+    int max_value = pixmap_image_get_max_color_value(image);
+    PixMapImageType type = pixmap_image_get_type(image);
+    
+    PixMapComponents *res = malloc(sizeof(PixMapComponents));
+    if(!res)
+    {
+	return NULL;
+    }
+
+    res->red = pixmap_image_new(NULL, width, height, max_value, type);
+    res->green = pixmap_image_new(NULL, width, height, max_value, type);
+    res->blue = pixmap_image_new(NULL, width, height, max_value, type);
+
+    int *error = malloc(sizeof(int));
+    *error = 0;
+    for(int y = 0; y < height; y++)
+    {
+	for(int x = 0; x < width; x++)
+	{
+	    RGB pixel = pixmap_image_get_pixel(image, x, y);
+	    pixmap_image_set_pixel(res->red, x, y, pixel.red, 0, 0, error);
+	    pixmap_image_set_pixel(res->green, x, y, 0, pixel.green, 0, error);
+	    pixmap_image_set_pixel(res->blue, x, y, 0, 0, pixel.blue, error);
+	    if(*error)
+		return NULL;
+	}
+    }
+    return res;
+}

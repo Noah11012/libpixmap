@@ -147,8 +147,8 @@ void pixmap_image_set_pixel(PixMapImage *image, int x, int y, int red, int green
     if(x > (image->_width - 1) || y > (image->_height - 1)
        || x < 0 || y < 0 || red < 0 || green < 0 || blue < 0)
     {
-        if(error) *error = 1;
-        return;
+	*error = 1;
+	return;
     }
 
     red = red <= image->_max_color_value ? red : image->_max_color_value;
@@ -156,9 +156,6 @@ void pixmap_image_set_pixel(PixMapImage *image, int x, int y, int red, int green
     blue = blue <= image->_max_color_value ? blue : image->_max_color_value;
 
     RGB color = { red, green, blue };
-
-    if(error)
-        *error = 0;
 
     image->_pixels[x + (y * image->_width)] = color;
 }
@@ -212,6 +209,11 @@ int pixmap_image_get_height(PixMapImage *image)
 int pixmap_image_get_max_color_value(PixMapImage *image)
 {
     return image->_max_color_value;
+}
+
+PixMapImageType pixmap_image_get_type (PixMapImage *image)
+{
+    return image->_type;
 }
 
 void pixmap_image_foreach_pixel(PixMapImage *image,
