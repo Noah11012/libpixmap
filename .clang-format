@@ -1,0 +1,14 @@
+AccessModifierOffset: 0
+AlignEscapedNewlinesLeft: true
+AlignTrailingComments: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: true
+BreakBeforeBraces: Allman
+AllowShortLoopsOnASingleLine: true
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: false
+IndentWidth: 4
+MaxEmptyLinesToKeep: 2
+SpaceBeforeParens: Never
+TabWidth: 4
