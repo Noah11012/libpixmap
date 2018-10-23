@@ -47,7 +47,11 @@ PixMapComponents *pixmap_filter_split_into_components(PixMapImage *image)
     res->blue = pixmap_image_new(NULL, width, height, max_value, type);
 
     if(!res->red || !res->green || !res->blue)
+<<<<<<< HEAD
 	return NULL;
+=======
+      return NULL;
+>>>>>>> 0f6eff3797bb20f6b908e865c72f8f272e14d1a0
 
     int error = 0;
     for(int y = 0; y < height; y++)
