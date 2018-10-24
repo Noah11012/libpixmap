@@ -132,6 +132,24 @@ int test6()
     pixmap_image_save(image);
 }
 
+int test7()
+{
+    PixMapImage *in = pixmap_image_open("test6_image.ppm");
+    PixMapImage *out = pixmap_image_copy(in, "test7_image.ppm", Text);
+    if(!out)
+	return -1;
+    int error = 0;
+    pixmap_filter_desaturate_average(out, &error);
+    if(error)
+	return -1;
+    if(pixmap_image_save(out) != 0)
+	return -1;
+    pixmap_image_close(in);
+    pixmap_image_close(out);
+    return 0;
+}
+    
+
 int main()
 {
     if(test1() != 0) return 1;
@@ -145,6 +163,9 @@ int main()
     if(test5() != 0) return 5;
 
     if(test6() != 0) return 6;
+
+    if(test7() != 0)
+	return 7;
 
     return 0;
 }

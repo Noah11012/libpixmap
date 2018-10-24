@@ -22,6 +22,8 @@ static int write_16_bit_binary_file(PixMapImage *image, FILE *image_file);
 PixMapImage *pixmap_image_new(char const *name, int width, int height,
                               int max_color_val, PixMapImageType type)
 {
+    type = (type == Text | type == Binary) ? type : Text;
+    
     PixMapImage *new_image = malloc(sizeof(*new_image));
 
     if(!new_image) return 0;
