@@ -79,3 +79,54 @@ void pixmap_filter_close_components(PixMapComponents *components)
 
     free(components);
 }
+
+void pixmap_filter_desaturate_lightness(PixMapImage *image, int *error)
+{
+    int width = pixmap_image_get_width(image);
+    int height = pixmap_image_get_height(image);
+
+    for(int y = 0; y < height; y++)
+    {
+	for(int x = 0; x < width; x++)
+	{
+	    RGB pixel = pixmap_image_get_pixel(image, x, y);
+	    int min, max;
+
+	    /* Get the largest and smallest values */
+	    if(pixel.red <= pixel.green && pixel.red <= pixel.blue)
+		min = pixel.red;
+	    else if(pixel.green <= pixel.red && pixel.green <= pixel.blue)
+		min = pixel.green;
+	    else
+		min = pixel.blue;
+
+	    if(pixel.red >= pixel.green && pixel.red >= pixel.blue)
+		max = pixel.red;
+	    else if(pixel.green >= pixel.red && pixel.green >= pixel.blue)
+		max = pixel.green;
+	    else
+		max = pixel.blue;
+
+	    pixel.red = pixel.green = pixel.blue = (max + min) / 2;
+
+	    pixmap_image_set_pixel_by_rgb(image, x, y, &pixel, error);
+	}
+    }
+}
+
+void pixmap_filter_desaturate_average(PixMapImage *image, int *error)
+{
+    int width = pixmap_image_get_width(image);
+    int height = pixmap_image_get_height(image);
+
+    for(int y = 0; y < height; y++)
+    {
+	for(int x = 0; x < width; x++)
+	{
+	    RGB pixel = pixmap_image_get_pixel(image, x, y);
+	    pixel.red = pixel.green = pixel.blue =
+		(pixel.red + pixel.green + pixel.blue) / 3;
+	    pixmap_image_set_pixel_by_rgb(image, x, y, &pixel, error);
+	}
+    }
+}
