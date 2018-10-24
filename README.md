@@ -63,7 +63,7 @@ instead. Any changes to the pixel array can be saved using `pixmap_image_save()`
 
 Sets an individual pixel from the image to a specified color. If the provided coordinate is out of bounds, then `error` will be set to 1 if a pointer to an `int` was given.
 
-### pixmap_image_set_pixel_by_rgb(PixMapImage *image, int x, int y, RGB *rgb, int *error)
+#### pixmap_image_set_pixel_by_rgb(PixMapImage *image, int x, int y, RGB *rgb, int *error)
 
 Sets an individual pixel from the image to a color specified by the `RGB` object passed to the function. If the provided coordinate is out of bounds, then `error` will be set to 1 if a pointer to an `int` was given.
 
@@ -71,26 +71,26 @@ Sets an individual pixel from the image to a color specified by the `RGB` object
 
 Gets an individual pixel from the image at the specified coordinate and returns an `RGB` value. If the specified coordinate is out of bounds, then all the values in the `RGB` value will be set to -1.
 
-### pixmap_image_save(PixMapImage *image)
+#### pixmap_image_save(PixMapImage *image)
 
 Saves a `.ppm` file of the given image. The filename is determined from the supplied `name` at the time of image creation. Returns 0 on success and -1 on failure.
 
-### pixmap_image_get_width(PixMapImage *image)
+#### pixmap_image_get_width(PixMapImage *image)
 
 Returns the width of the given image object.
 
-### pixmap_image_get_height(PixMapImage *image)
+#### pixmap_image_get_height(PixMapImage *image)
 
 Returns the height of the given image object.
 
-### pixmap_image_get_max_color_value(PixMapImage *image)
+#### pixmap_image_get_max_color_value(PixMapImage *image)
 
 Returns the max color value of the given image object.
 
-### pixmap_image_get_type(PixMapImage *image)
+#### pixmap_image_get_type(PixMapImage *image)
 
 Returns the type of the given image object. The valid types are `Text` for ASCII-encoded files and `Binary` for binary-encoded files.
 
-### pixmap_imaage_foreach_pixel(PixMapImage *image, void (*func)(RGB pixel, void *arg), void *func_arg)
+#### pixmap_imaage_foreach_pixel(PixMapImage *image, void (*func)(RGB pixel, void *arg), void *func_arg)
 
 Applies a given transform to each pixel in an image object. Takes a function of the form `void (*func)(RGB pixel, void *arg)`, that is a function returning `void` that takes an `RGB` and a `void *` argument. The argument `func_arg` is a `void *` that can be used to pass any value or `struct` of values to the given function.
