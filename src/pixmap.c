@@ -123,8 +123,8 @@ PixMapImage *pixmap_image_open(char const *name)
     return new_image;
 }
 
-PixMapImage *pixmap_image_copy(PixMapImage *image, char const *new_name,
-                               PixMapImageType type)
+PixMapImage *pixmap_image_copy(PixMapImage const *image, char const *new_name,
+                               PixMapImageType const type)
 {
     PixMapImage *copy_image = pixmap_image_new(
         new_name, image->_width, image->_height, image->_max_color_value, type);
@@ -141,7 +141,7 @@ PixMapImage *pixmap_image_copy(PixMapImage *image, char const *new_name,
     return copy_image;
 }
 
-RGB *pixmap_image_get_pixel_array(PixMapImage *image)
+RGB *pixmap_image_get_pixel_array(PixMapImage const *image)
 {
     return image->_pixels;
 }
@@ -171,7 +171,7 @@ void pixmap_image_set_pixel_by_rgb(PixMapImage *image, int x, int y, RGB *rgb,
     pixmap_image_set_pixel(image, x, y, rgb->red, rgb->green, rgb->blue, error);
 }
 
-RGB pixmap_image_get_pixel(PixMapImage *image, int x, int y)
+RGB pixmap_image_get_pixel(PixMapImage const *image, int x, int y)
 {
     if(x > (image->_width - 1) || y > (image->_height - 1) || x < 0 || y < 0)
     {
@@ -182,7 +182,7 @@ RGB pixmap_image_get_pixel(PixMapImage *image, int x, int y)
     return image->_pixels[x + (y * image->_width)];
 }
 
-int pixmap_image_save(PixMapImage *image)
+int pixmap_image_save(PixMapImage const *image)
 {
     if(!image->_file_name) return -1;
 
@@ -202,22 +202,22 @@ int pixmap_image_save(PixMapImage *image)
     return 0;
 }
 
-int pixmap_image_get_width(PixMapImage *image)
+int pixmap_image_get_width(PixMapImage const *image)
 {
     return image->_width;
 }
 
-int pixmap_image_get_height(PixMapImage *image)
+int pixmap_image_get_height(PixMapImage const *image)
 {
     return image->_height;
 }
 
-int pixmap_image_get_max_color_value(PixMapImage *image)
+int pixmap_image_get_max_color_value(PixMapImage const *image)
 {
     return image->_max_color_value;
 }
 
-PixMapImageType pixmap_image_get_type(PixMapImage *image)
+PixMapImageType pixmap_image_get_type(PixMapImage const *image)
 {
     return image->_type;
 }
