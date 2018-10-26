@@ -13,14 +13,19 @@ struct _PixMapImage
 static int get_metadata_value(FILE *file);
 static int read_ascii_pixel_values_rgb(PixMapImage *image, FILE *image_file);
 static int read_8_bit_binary_pixel_values_rgb(PixMapImage *image, FILE *image_file);
-static int read_16_bit_binary_pixel_values_rgb(PixMapImage *image,
-                                           FILE *image_file);
+static int read_16_bit_binary_pixel_values_rgb(PixMapImage *image, FILE *image_file);
+
+static int read_ascii_pixel_values_greyscale(PixMapImage *image, FILE *image_file);
+static int read_8_bit_binary_pixel_values_greyscale(PixMapImage *image, FILE *image_file);
+static int read_16_bit_binary_pixel_values_greyscale(PixMapImage *image, FILE *image_file);
+
 static int write_ascii_file_rgb(PixMapImage const *image, FILE *image_file);
 static int write_8_bit_binary_file_rgb(PixMapImage const *image, FILE *image_file);
 static int write_16_bit_binary_file_rgb(PixMapImage const *image, FILE *image_file);
 
 static int write_ascii_file_greyscale(PixMapImage const *image, FILE *image_file);
 static int write_8_bit_binary_file_greyscale(PixMapImage const *image, FILE *image_file);
+static int write_16_bit_binary_file_greyscale(PixMapImage const *image, FILE *image_file);
 
 PixMapImage *pixmap_image_new(char const *name, int width, int height,
                               int max_color_val, PixMapImageType type)
@@ -95,17 +100,35 @@ PixMapImage *pixmap_image_open(char const *name)
         return 0;
     }
 
-    if(sig[1] == '3')
+    if(sig[1] == '2')
     {
-        if(read_ascii_pixel_values_rgb(new_image, image_file) < 0) return 0;
+	if(read_ascii_pixel_values_greyscale(new_image, image_file) < 0)
+	    return 0;
+    }	   
+    else if(sig[1] == '3')
+    {
+        if(read_ascii_pixel_values_rgb(new_image, image_file) < 0)
+	    return 0;
+    }
+    else if(sig[1] == '4' && new_image->_max_color_value <= 255)
+    {
+	if(read_8_bit_binary_pixel_values_greyscale(new_image, image_file) < 0)
+	    return 0;
+    }
+    else if(sig[1] == '4' && new_image->_max_color_value > 255)
+    {
+	if(read_16_bit_binary_pixel_values_greyscale(new_image, image_file) < 0)
+	    return 0;
     }
     else if(sig[1] == '6' && new_image->_max_color_value <= 255)
     {
-        if(read_8_bit_binary_pixel_values_rgb(new_image, image_file) < 0) return 0;
+        if(read_8_bit_binary_pixel_values_rgb(new_image, image_file) < 0)
+	    return 0;
     }
     else if(sig[1] == '6' && new_image->_max_color_value > 255)
     {
-        if(read_16_bit_binary_pixel_values_rgb(new_image, image_file) < 0) return 0;
+        if(read_16_bit_binary_pixel_values_rgb(new_image, image_file) < 0)
+	    return 0;
     }
     else
     {
@@ -367,6 +390,87 @@ static int read_16_bit_binary_pixel_values_rgb(PixMapImage *image, FILE *image_f
 
     return 0;
 }
+
+static int read_ascii_pixel_values_greyscale(PixMapImage *image, FILE *image_file)
+{
+    int c;
+    unsigned int value_in = 0;
+    int file_pos = 0;
+    int total_pixels = image->_width * image->_height;
+
+    /* Read in the pixel values */
+    while((c = fgetc(image_file)) != EOF)
+    {
+        value_in = 0;
+        if(isdigit(c))
+        {
+            ungetc(c, image_file);
+            while((c = fgetc(image_file)) != EOF && c != ' ' && c != '\n')
+            {
+                value_in *= 10;
+                value_in += (c - '0');
+            }
+	    image->_pixels[file_pos] = (RGB) {.red = value_in,
+				       .green = value_in,
+				       .blue = value_in};
+	    file_pos++;
+        }
+    }
+
+    if(file_pos > total_pixels)
+    {
+        free(image);
+        image = NULL;
+        fclose(image_file);
+
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_8_bit_binary_pixel_values_greyscale(PixMapImage *image, FILE *image_file)
+{
+    uint8_t value_in = 0;
+    int total_pixels = image->_width * image->_height;
+    
+    for(int i = 0; i < total_pixels; i++)
+    {
+	fread(&value_in, sizeof(uint8_t), 1, image_file);
+	if(ferror(image_file))
+	{
+	    fclose(image_file);
+	    pixmap_image_close(image);
+	    return -1;
+	}
+	image->_pixels[i] = (RGB) {.red = value_in,
+				   .green = value_in,
+				   .blue = value_in};
+    }
+    return 0;
+}
+
+static int read_16_bit_binary_pixel_values_greyscale(PixMapImage *image, FILE *image_file)
+{
+    uint16_t value_in = 0;
+    int total_pixels = image->_width * image->_height;
+    
+    for(int i = 0; i < total_pixels; i++)
+    {
+	fread(&value_in, sizeof(uint16_t), 1, image_file);
+	if(ferror(image_file))
+	{
+	    fclose(image_file);
+	    pixmap_image_close(image);
+	    return -1;
+	}
+	image->_pixels[i] = (RGB) {.red = value_in,
+				   .green = value_in,
+				   .blue = value_in};
+    }
+    return 0;
+}
+	
 
 static int write_ascii_file_rgb(PixMapImage const *image, FILE *image_file)
 {
