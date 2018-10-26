@@ -624,7 +624,7 @@ static int write_8_bit_binary_file_greyscale(PixMapImage const *image, FILE *ima
 static int write_16_bit_binary_file_greyscale(PixMapImage const *image, FILE *image_file)
 {
     int total_pixels = image->_width * image->_height;
-    uint16_t *temp_pixels = malloc(sizeof(uint8_t) * total_pixels);
+    uint16_t *temp_pixels = malloc(sizeof(uint16_t) * total_pixels);
     if(!temp_pixels)
     {
 	fclose(image_file);

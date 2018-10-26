@@ -22,9 +22,9 @@ int test1()
     PixMapImage *image_copy = pixmap_image_copy(image, "test_copy.ppm", Text);
     if(!image_copy) return -1;
 
-    if(pixmap_image_save(image) != 0) return -1;
+    if(pixmap_image_save_rgb(image) != 0) return -1;
 
-    if(pixmap_image_save(image_copy) != 0) return -1;
+    if(pixmap_image_save_rgb(image_copy) != 0) return -1;
 
     pixmap_image_close(image);
     pixmap_image_close(image_copy);
@@ -43,7 +43,7 @@ int test2()
 
     if(!image_out) return -1;
 
-    int status = pixmap_image_save(image_out);
+    int status = pixmap_image_save_rgb(image_out);
 
     if(status != 0) return -1;
 
@@ -67,7 +67,7 @@ int test3()
         }
     }
 
-    pixmap_image_save(image);
+    pixmap_image_save_rgb(image);
 
     pixmap_image_close(image);
     return 0;
@@ -85,7 +85,7 @@ int test4(void)
     if(!image_out) return -1;
 
 
-    if(pixmap_image_save(image_out) != 0) return -1;
+    if(pixmap_image_save_rgb(image_out) != 0) return -1;
 
     pixmap_image_close(image);
     pixmap_image_close(image_out);
@@ -129,7 +129,7 @@ int test6()
 
     pixmap_filter_brightness(image, -9, error);
     if(error) return -1;
-    pixmap_image_save(image);
+    pixmap_image_save_rgb(image);
 }
 
 int test7()
@@ -142,13 +142,25 @@ int test7()
     pixmap_filter_desaturate_average(out, &error);
     if(error)
 	return -1;
-    if(pixmap_image_save(out) != 0)
+    if(pixmap_image_save_rgb(out) != 0)
 	return -1;
     pixmap_image_close(in);
     pixmap_image_close(out);
     return 0;
 }
-    
+
+int test8()
+{
+    PixMapImage *in = pixmap_image_open("test7_image.ppm");
+    PixMapImage *out = pixmap_image_copy(in, "test8_image.pgm", Binary);
+    if(!out)
+	return -1;
+    if(pixmap_image_save_greyscale(out) != 0)
+	return -1;
+    pixmap_image_close(in);
+    pixmap_image_close(out);
+    return 0;
+}
 
 int main()
 {
@@ -166,6 +178,9 @@ int main()
 
     if(test7() != 0)
 	return 7;
+
+    if(test8() != 0)
+	return 8;
 
     return 0;
 }
