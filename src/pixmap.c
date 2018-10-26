@@ -11,15 +11,16 @@ struct _PixMapImage
 };
 
 static int get_metadata_value(FILE *file);
-static int read_ascii_pixel_values(PixMapImage *image, FILE *image_file);
-static int read_8_bit_binary_pixel_values(PixMapImage *image, FILE *image_file);
-static int read_16_bit_binary_pixel_values(PixMapImage *image,
+static int read_ascii_pixel_values_rgb(PixMapImage *image, FILE *image_file);
+static int read_8_bit_binary_pixel_values_rgb(PixMapImage *image, FILE *image_file);
+static int read_16_bit_binary_pixel_values_rgb(PixMapImage *image,
                                            FILE *image_file);
-static int write_ascii_file_rgb(PixMapImage *image, FILE *image_file);
-static int write_8_bit_binary_file_rgb(PixMapImage *image, FILE *image_file);
-static int write_16_bit_binary_file_rgb(PixMapImage *image, FILE *image_file);
+static int write_ascii_file_rgb(PixMapImage const *image, FILE *image_file);
+static int write_8_bit_binary_file_rgb(PixMapImage const *image, FILE *image_file);
+static int write_16_bit_binary_file_rgb(PixMapImage const *image, FILE *image_file);
 
-static int write_ascii_file_greyscale(PixMapImage *image, FILE *image_file);
+static int write_ascii_file_greyscale(PixMapImage const *image, FILE *image_file);
+static int write_8_bit_binary_file_greyscale(PixMapImage const *image, FILE *image_file);
 
 PixMapImage *pixmap_image_new(char const *name, int width, int height,
                               int max_color_val, PixMapImageType type)
@@ -96,15 +97,15 @@ PixMapImage *pixmap_image_open(char const *name)
 
     if(sig[1] == '3')
     {
-        if(read_ascii_pixel_values(new_image, image_file) < 0) return 0;
+        if(read_ascii_pixel_values_rgb(new_image, image_file) < 0) return 0;
     }
     else if(sig[1] == '6' && new_image->_max_color_value <= 255)
     {
-        if(read_8_bit_binary_pixel_values(new_image, image_file) < 0) return 0;
+        if(read_8_bit_binary_pixel_values_rgb(new_image, image_file) < 0) return 0;
     }
     else if(sig[1] == '6' && new_image->_max_color_value > 255)
     {
-        if(read_16_bit_binary_pixel_values(new_image, image_file) < 0) return 0;
+        if(read_16_bit_binary_pixel_values_rgb(new_image, image_file) < 0) return 0;
     }
     else
     {
@@ -265,7 +266,7 @@ static int get_metadata_value(FILE *fin)
     return res;
 }
 
-static int read_ascii_pixel_values(PixMapImage *image, FILE *image_file)
+static int read_ascii_pixel_values_rgb(PixMapImage *image, FILE *image_file)
 {
     int c;
     RGB pixel;
@@ -317,7 +318,7 @@ static int read_ascii_pixel_values(PixMapImage *image, FILE *image_file)
     return 0;
 }
 
-static int read_8_bit_binary_pixel_values(PixMapImage *image, FILE *image_file)
+static int read_8_bit_binary_pixel_values_rgb(PixMapImage *image, FILE *image_file)
 {
     int total_pixels = image->_width * image->_height;
     uint8_t value_in[3];
@@ -342,7 +343,7 @@ static int read_8_bit_binary_pixel_values(PixMapImage *image, FILE *image_file)
     return 0;
 }
 
-static int read_16_bit_binary_pixel_values(PixMapImage *image, FILE *image_file)
+static int read_16_bit_binary_pixel_values_rgb(PixMapImage *image, FILE *image_file)
 {
     int total_pixels = image->_width * image->_height;
     uint16_t value_in[3];
@@ -367,7 +368,7 @@ static int read_16_bit_binary_pixel_values(PixMapImage *image, FILE *image_file)
     return 0;
 }
 
-static int write_ascii_file_rgb(PixMapImage *image, FILE *image_file)
+static int write_ascii_file_rgb(PixMapImage const *image, FILE *image_file)
 {
     fprintf(image_file, "%s\n%d %d\n%d\n", "P3", image->_width, image->_height,
             image->_max_color_value);
@@ -391,9 +392,10 @@ static int write_ascii_file_rgb(PixMapImage *image, FILE *image_file)
         w++;
         i++;
     }
+    return 0;
 }
 
-static int write_8_bit_binary_file_rgb(PixMapImage *image, FILE *image_file)
+static int write_8_bit_binary_file_rgb(PixMapImage  const *image, FILE *image_file)
 {
     uint8_t *temp_pixels =
         malloc(sizeof(uint8_t) * image->_width * image->_height * 3);
@@ -424,9 +426,10 @@ static int write_8_bit_binary_file_rgb(PixMapImage *image, FILE *image_file)
            image_file);
 
     free(temp_pixels);
+    return 0;
 }
 
-static int write_16_bit_binary_file_rgb(PixMapImage *image, FILE *image_file)
+static int write_16_bit_binary_file_rgb(PixMapImage const *image, FILE *image_file)
 {
     uint16_t *temp_pixels =
         malloc(sizeof(uint16_t) * image->_width * image->_height * 3);
@@ -457,16 +460,58 @@ static int write_16_bit_binary_file_rgb(PixMapImage *image, FILE *image_file)
            image_file);
 
     free(temp_pixels);
+    return 0;
 }
 
-static int write_ascii_file_greyscale(PixMapImage *image, FILE *image_file)
+static int write_ascii_file_greyscale(PixMapImage const *image, FILE *image_file)
 {
     fprintf(image_file, "%s\n%d %d\n%d\n", "P2", image->_width, image->_height,
 	    image->_max_color_value);
     int total_pixels = image->_width * image->_height;
     for(int i = 0; i < total_pixels; i += 2)
     {
-	fprintf(image_file, "%d %d\n", image->_pixels[i].red
+	fprintf(image_file, "%d %d\n", image->_pixels[i].red,
 		image->_pixels[i + 1].red);
     }
+    return 0;
+}
+
+static int write_8_bit_binary_file_greyscale(PixMapImage const *image, FILE *image_file)
+{
+    int total_pixels = image->_width * image->_height;
+    uint8_t *temp_pixels = malloc(sizeof(uint8_t) * total_pixels);
+    if(!temp_pixels)
+    {
+	fclose(image_file);
+	return -1;
+    }
+    for(int i = 0; i < total_pixels; i++)
+	temp_pixels[i] = image->_pixels[i].red;
+    
+    fprintf(image_file, "%s\n%d %d\n%d\n", "P4", image->_width, image->_height,
+	    image->_max_color_value);
+    fwrite(temp_pixels, sizeof(uint8_t), total_pixels, image_file);
+
+    free(temp_pixels);
+    return 0;
+}
+
+static int write_16_bit_binary_file_greyscale(PixMapImage const *image, FILE *image_file)
+{
+    int total_pixels = image->_width * image->_height;
+    uint16_t *temp_pixels = malloc(sizeof(uint8_t) * total_pixels);
+    if(!temp_pixels)
+    {
+	fclose(image_file);
+	return -1;
+    }
+    for(int i = 0; i < total_pixels; i++)
+	temp_pixels[i] = htons(image->_pixels[i].red);
+    
+    fprintf(image_file, "%s\n%d %d\n%d\n", "P4", image->_width, image->_height,
+	    image->_max_color_value);
+    fwrite(temp_pixels, sizeof(uint16_t), total_pixels, image_file);
+
+    free(temp_pixels);
+    return 0;
 }
