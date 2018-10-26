@@ -136,14 +136,11 @@ int test7()
 {
     PixMapImage *in = pixmap_image_open("test6_image.ppm");
     PixMapImage *out = pixmap_image_copy(in, "test7_image.ppm", Text);
-    if(!out)
-	return -1;
+    if(!out) return -1;
     int error = 0;
     pixmap_filter_desaturate_average(out, &error);
-    if(error)
-	return -1;
-    if(pixmap_image_save_rgb(out) != 0)
-	return -1;
+    if(error) return -1;
+    if(pixmap_image_save_rgb(out) != 0) return -1;
     pixmap_image_close(in);
     pixmap_image_close(out);
     return 0;
@@ -153,10 +150,8 @@ int test8()
 {
     PixMapImage *in = pixmap_image_open("test7_image.ppm");
     PixMapImage *out = pixmap_image_copy(in, "test8_image.pgm", Binary);
-    if(!out)
-	return -1;
-    if(pixmap_image_save_greyscale(out) != 0)
-	return -1;
+    if(!out) return -1;
+    if(pixmap_image_save_greyscale(out) != 0) return -1;
     pixmap_image_close(in);
     pixmap_image_close(out);
     return 0;
@@ -176,11 +171,9 @@ int main()
 
     if(test6() != 0) return 6;
 
-    if(test7() != 0)
-	return 7;
+    if(test7() != 0) return 7;
 
-    if(test8() != 0)
-	return 8;
+    if(test8() != 0) return 8;
 
     return 0;
 }
