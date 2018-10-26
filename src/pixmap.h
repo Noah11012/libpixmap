@@ -35,7 +35,8 @@ void         pixmap_image_set_pixel_by_rgb   (PixMapImage *image,
                                               int x, int y,
                                               RGB *rgb, int *error);
 RGB          pixmap_image_get_pixel          (PixMapImage const *image, int x, int y);
-int          pixmap_image_save               (PixMapImage const *image);
+int          pixmap_image_save_rgb           (PixMapImage const *image);
+int          pixmap_image_save_greyscale     (PixMapImage const *image);
 int          pixmap_image_get_width          (PixMapImage const *image);
 int          pixmap_image_get_height         (PixMapImage const *image);
 int          pixmap_image_get_max_color_value(PixMapImage const *image);

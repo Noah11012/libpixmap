@@ -208,13 +208,15 @@ RGB pixmap_image_get_pixel(PixMapImage const *image, int x, int y)
     return image->_pixels[x + (y * image->_width)];
 }
 
-int pixmap_image_save(PixMapImage const *image)
+int pixmap_image_save_rgb(PixMapImage const *image)
 {
-    if(!image->_file_name) return -1;
+    if(!image->_file_name)
+	return -1;
 
     FILE *image_file = fopen(image->_file_name, "w");
 
-    if(!image_file) return -1;
+    if(!image_file)
+	return -1;
 
     if(image->_type == Text)
         write_ascii_file_rgb(image, image_file);
@@ -225,6 +227,25 @@ int pixmap_image_save(PixMapImage const *image)
 
     fclose(image_file);
 
+    return 0;
+}
+
+int pixmap_image_save_greyscale(PixMapImage const *image)
+{
+    if(!image->_file_name)
+	return -1;
+
+    FILE *image_file = fopen(image->_file_name, "w");
+    if(!image_file)
+	return -1;
+    if(image->_type == Text)
+	write_ascii_file_greyscale(image, image_file);
+    else if(image->_type == Binary && image->_max_color_value <= 255)
+	write_8_bit_binary_file_greyscale(image, image_file);
+    else if(image->_type == Binary && image->_max_color_value > 255)
+	write_16_bit_binary_file_greyscale(image, image_file);
+
+    fclose(image_file);
     return 0;
 }
 
