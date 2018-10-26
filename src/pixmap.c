@@ -31,10 +31,11 @@ PixMapImage *pixmap_image_new(char const *name, int width, int height,
                               int max_color_val, PixMapImageType type)
 {
     type = (type == Text | type == Binary) ? type : Text;
-    
+
     PixMapImage *new_image = malloc(sizeof(*new_image));
 
-    if(!new_image) return 0;
+    if(!new_image)
+        return 0;
 
     new_image->_width = width;
     new_image->_height = height;
@@ -60,7 +61,8 @@ PixMapImage *pixmap_image_open(char const *name)
 {
     FILE *image_file = fopen(name, "r+");
 
-    if(!image_file) return 0;
+    if(!image_file)
+        return 0;
 
     PixMapImage *new_image = malloc(sizeof(*new_image));
 
@@ -155,7 +157,8 @@ PixMapImage *pixmap_image_copy(PixMapImage const *image, char const *new_name,
     PixMapImage *copy_image = pixmap_image_new(
         new_name, image->_width, image->_height, image->_max_color_value, type);
 
-    if(!copy_image) return 0;
+    if(!copy_image)
+        return 0;
 
     int i = 0;
     while(i < copy_image->_width * copy_image->_height)
@@ -279,7 +282,8 @@ void pixmap_image_foreach_pixel(PixMapImage *image,
 
 void pixmap_image_close(PixMapImage *image)
 {
-    if(!image) return;
+    if(!image)
+        return;
 
     if(image->_pixels)
     {
@@ -296,8 +300,10 @@ static int get_metadata_value(FILE *fin)
     int comment = 0;
     while((c = fgetc(fin)) != EOF)
     {
-        if(c == '#') comment = 1;
-        if(c == '\n') comment = 0;
+        if(c == '#')
+            comment = 1;
+        if(c == '\n')
+            comment = 0;
 
         if(isdigit(c) && !comment)
         {
