@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 ## Documentation
 #### pixmap_image_new(char const *name, int width, int height, int max_color_val, PixMapImageType type)
 
-Creates a new `PixMapImage` at the path `name` and with the dimensions of `width` x `height` and the maximum color value of `max_color_val` with the PPM image type of `type`. `type` can either be `Text` or `Binary`. `max_color_val` is clamped at 65535. A `max_color_val` of 255 or less will create an 8-bit image, while a `max_color_val` between 256 and 65535 will create a 16-bit image. Free with `pixmap_image_close()`. Returns 0 on failure.
+Creates a new `PixMapImage` at the path `name` and with the dimensions of `width` x `height` and the maximum color value of `max_color_val` with the PPM image type of `type`. `type` can either be `Text` or `Binary`. `max_color_val` is clamped at 65535. A `max_color_val` of 255 or less will create an 8-bit image, while a `max_color_val` between 256 and 65535 will create a 16-bit image. Free with `pixmap_ifmage_close()`. RGB and greyscale images are read into a common internal format. Returns 0 on failure.
 
 #### pixmap_image_close(PixMapImage *image)
 
@@ -51,7 +51,7 @@ Opens an existing image at the path `name`. Free with `pixmap_image_close()`. Re
 
 #### pixmap_image_copy(PixMapImage *image, char const *new_name, PixMapImageType type)
 
-Copies an existing `PixMapImage` under the new name `new_name` with PPM image type of `type` `type` can either be `Text` or `Binary`. Does not actually write to disk until `pixmap_image_save()` is called. Free with `pixmap_image_close()`. Returns the copy on success but 0 on failure.
+Copies an existing `PixMapImage` under the new name `new_name` with PPM image type of `type` `type` can either be `Text` or `Binary`. Does not actually write to disk until `pixmap_image_save_rgb()` or `pixmap_image_save_greyscale()` is called. Free with `pixmap_image_close()`. Returns the copy on success but 0 on failure.
 
 #### pixmap_image_get_pixel_array(PixMapImage *image)
 
@@ -71,9 +71,13 @@ Sets an individual pixel from the image to a color specified by the `RGB` object
 
 Gets an individual pixel from the image at the specified coordinate and returns an `RGB` value. If the specified coordinate is out of bounds, then all the values in the `RGB` value will be set to -1.
 
-#### pixmap_image_save(PixMapImage *image)
+#### pixmap_image_save_rgb(PixMapImage *image)
 
 Saves a `.ppm` file of the given image. The filename is determined from the supplied `name` at the time of image creation. Returns 0 on success and -1 on failure.
+
+#### pixmap_image_save_greyscale(PixMapImage *image)
+
+Saves a greyscale `.pgm` file of the given image. To save a greyscale image, only the red channel of the image will be saved; if `image` is an RGB type, it will still save the file, but two-thirds of the information will be lost.
 
 #### pixmap_image_get_width(PixMapImage *image)
 
