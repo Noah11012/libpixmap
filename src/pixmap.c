@@ -2,7 +2,7 @@
 
 struct PixMapImage
 {
-    FILE *file;
+    FILE *image_file;
     u8   *pixels;
     int   width;
     int   height;
@@ -29,13 +29,13 @@ void pixmap_image_new(PixMapImage **image, u32 width, u32 height)
         return;
     }
 
-    new_image->file = 0;
+    new_image->image_file = 0;
     *image = new_image;
 }
 
 void pixmap_image_free(PixMapImage *image)
 {
-    fclose(image->file);
+    fclose(image->image_file);
     free(image->pixels);
     free(image);
 }
