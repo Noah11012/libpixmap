@@ -4,8 +4,9 @@ struct PixMapImage
 {
     FILE *image_file;
     u8   *pixels;
-    int   width;
-    int   height;
+    u32   width;
+    u32   height;
+    u32   maximum_color_value;
 };
 
 static u32 pixmap_image_read_number(FILE *file, u32 *output);
@@ -71,9 +72,10 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
 
     u32 image_width = 0;
     u32 image_height = 0;
+    u32 image_maximum_color_value = 0;
     u32 number = 0;
 
-    // Extract width and height first
+    // Extract width, height and the maximum color value first
     
     // width
     
@@ -86,7 +88,16 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
 
     // height
     
-    if(pixmap_image_read_number(file, &image_width) == -1)
+    if(pixmap_image_read_number(file, &image_height) == -1)
+    {
+        fclose(file);
+        *image = 0;
+        return;
+    }
+
+    // maximum color value
+    
+    if(pixmap_image_read_number(file, &image_maximum_color_value) == -1)
     {
         fclose(file);
         *image = 0;
@@ -94,8 +105,7 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
     }
 
     PixMapImage *new_image = 0;
-    pixmap_image_new(&new_image, image_width, number);
-    if(!new_image)
+    if(!(new_image = malloc(sizeof(PixMapImage))))
     {
         *image = 0;
         return;
@@ -108,9 +118,26 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
     }
 
     new_image->width = image_width;
-    new_image->height = number;
+    new_image->height = image_height;
+    
+    u32 color = 0;
+    u32 pixel_array_index = 0;
+    while(pixmap_image_read_number(file, &color) != -1)
+        new_image->pixels[pixel_array_index++] = color;
 
-    // TODO(noah): Parse pixels
+    *image = new_image;
+
+    // TODO(noah): parsing pixels works, but "parses" two zeros seemingly out of nowhere
+}
+
+u32 pixmap_image_width(PixMapImage *image)
+{
+    return image->width;
+}
+
+u32 pixmap_image_height(PixMapImage *image)
+{
+    return image->height;
 }
 
 static u32 pixmap_image_read_number(FILE *file, u32 *output)
@@ -121,7 +148,7 @@ static u32 pixmap_image_read_number(FILE *file, u32 *output)
     while((c = fgetc(file)) && (!feof(file)))
     {
         if(c == '#')
-            is_comment = 1;    
+            is_comment = 1;
         else if(c == '\n')
             is_comment = 0;
         else if(is_comment)
