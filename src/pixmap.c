@@ -9,10 +9,10 @@ struct PixMapImage
     u32   maximum_color_value;
 };
 
-// parses a number from a file and value is "returned" from *output
+// parses a number from a file and *output is filled with the result
 // returns 0 if file can still be processed and -1 when EOF is reached
 
-static u32 pixmap_image_read_number(FILE *file, u32 *output);
+static i32 pixmap_image_read_number(FILE *file, u32 *output);
 
 void pixmap_image_new(PixMapImage **image, u32 width, u32 height)
 {
@@ -77,7 +77,6 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
     u32 image_width = 0;
     u32 image_height = 0;
     u32 image_maximum_color_value = 0;
-    u32 number = 0;
 
     // Extract width, height and the maximum color value first
     
@@ -116,22 +115,23 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
         return;
     }
 
-    if(!(new_image->pixels = malloc(sizeof(u8) * (image_width * number * 3))))
+    if(!(new_image->pixels = malloc(sizeof(u8) * (30 * 20 * 3))))
     {
         fclose(file);
+        free(new_image);
         *image = 0;
         return;
     }
 
     new_image->width = image_width;
     new_image->height = image_height;
-   
+    
     // pixels
     
     u32 color = 0;
     u32 pixel_array_index = 0;
-    while(pixmap_image_read_number(file, &color) != -1)
-        new_image->pixels[pixel_array_index++] = color;
+    while((pixmap_image_read_number(file, &color) != -1))
+            new_image->pixels[pixel_array_index++] = color;
 
     *image = new_image;
 
@@ -148,12 +148,12 @@ u32 pixmap_image_height(PixMapImage *image)
     return image->height;
 }
 
-static u32 pixmap_image_read_number(FILE *file, u32 *output)
+static i32 pixmap_image_read_number(FILE *file, u32 *output)
 {
-    int is_comment = 0;
-    int c = 0;
-    int number = 0;
-    while((c = fgetc(file)) && (!feof(file)))
+    u32 is_comment = 0;
+    i32 c = 0;
+    u32 number = 0;
+    while((c = fgetc(file)) != EOF || ferror(file))
     {
         if(c == '#')
             is_comment = 1;
@@ -161,17 +161,17 @@ static u32 pixmap_image_read_number(FILE *file, u32 *output)
             is_comment = 0;
         else if(is_comment)
             continue;
-
-        if(isdigit(c))
+        else
         {
-            number *= 10;
-            number += (c - '0');
-        }
-
-        if(isspace(c))
-        {
-            *output = number;
-            return 0;
+            if(isdigit(c))
+            {
+                number *= 10;
+                number += (c - '0');
+            } else if(isspace(c))
+            {
+                *output = number;
+                return 0;
+            }
         }
     }
 
