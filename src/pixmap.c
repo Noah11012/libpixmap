@@ -119,6 +119,8 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
 
     new_image->width = image_width;
     new_image->height = image_height;
+   
+    // pixels
     
     u32 color = 0;
     u32 pixel_array_index = 0;
@@ -127,7 +129,7 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
 
     *image = new_image;
 
-    // TODO(noah): parsing pixels works, but "parses" two zeros seemingly out of nowhere
+    // TODO(noah): parsing pixels works, but "parses" two zeros seemingly out of nowhere in the beginning
 }
 
 u32 pixmap_image_width(PixMapImage *image)
