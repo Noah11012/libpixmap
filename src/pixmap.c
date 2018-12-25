@@ -71,6 +71,10 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
         return;
     }
 
+    // skip over newline character after P3
+
+    fseek(file, 1, SEEK_CUR);
+
     // PPM images allow for comments virtually ANYWHERE in the file
     // We have to keep this in mind
 
@@ -115,7 +119,7 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
         return;
     }
 
-    if(!(new_image->pixels = malloc(sizeof(u8) * (30 * 20 * 3))))
+    if(!(new_image->pixels = malloc((sizeof(u8) * 30 * 20 * 3))))
     {
         fclose(file);
         free(new_image);
@@ -134,8 +138,6 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
             new_image->pixels[pixel_array_index++] = color;
 
     *image = new_image;
-
-    // TODO(noah): parsing pixels works, but "parses" two zeros seemingly out of nowhere in the beginning
 }
 
 u32 pixmap_image_width(PixMapImage *image)
@@ -150,29 +152,27 @@ u32 pixmap_image_height(PixMapImage *image)
 
 static i32 pixmap_image_read_number(FILE *file, u32 *output)
 {
-    u32 is_comment = 0;
     i32 c = 0;
+    u32 is_comment = 0;
     u32 number = 0;
-    while((c = fgetc(file)) != EOF || ferror(file))
+    while((c = fgetc(file)) != EOF)
     {
+        if(ferror(file))
+            return -1;
+        
         if(c == '#')
             is_comment = 1;
-        else if(c == '\n')
-            is_comment = 0;
-        else if(is_comment)
+        if(is_comment)
             continue;
-        else
+
+        if(isspace(c) && !is_comment)
         {
-            if(isdigit(c))
-            {
-                number *= 10;
-                number += (c - '0');
-            } else if(isspace(c))
-            {
-                *output = number;
-                return 0;
-            }
+            *output = number;
+            return 0;
         }
+
+        number *= 10;
+        number += c - '0';
     }
 
     return -1;
