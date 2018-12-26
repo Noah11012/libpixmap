@@ -150,6 +150,11 @@ u32 pixmap_image_height(PixMapImage *image)
     return image->height;
 }
 
+u32 pixmap_image_max_color_value(PixMapImage *image)
+{
+    return image->maximum_color_value;
+}
+
 static i32 pixmap_image_read_number(FILE *file, u32 *output)
 {
     i32 c = 0;
