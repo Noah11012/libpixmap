@@ -7,6 +7,12 @@
 #include <string.h>
 
 typedef struct PixMapImage PixMapImage;
+typedef struct
+{
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+} PixMapRGB;
 
 typedef int32_t i32;
 typedef uint8_t u8;
@@ -22,4 +28,4 @@ u32  pixmap_image_width          (PixMapImage  *image);
 u32  pixmap_image_height         (PixMapImage  *image);
 u32  pixmap_image_max_color_value(PixMapImage  *image);
 
-void pixmap_image_get_pixel      (PixMapImage  *image, u32 x, u32 y, u8 *red, u8 *green, u8 *blue);
+void pixmap_image_get_pixel      (PixMapImage  *image, u32 x, u32 y, PixMapRGB *color);
