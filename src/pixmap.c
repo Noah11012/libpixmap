@@ -183,14 +183,37 @@ static i32 pixmap_image_read_number(FILE *file, u32 *output)
     return -1;
 }
 
-void pixmap_image_get_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB *color) 
+int pixmap_image_set_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB const *color)
 {
     if(!color)
-        return;
+        return -1;
+    if((x < 0) || (x > image->width - 1))
+        return -1;
+    if((y < 0) || (y > image->height - 1))
+        return -1;
+
+    *(image->pixels + (x + (y * image->width)) * 3) = color->red;
+    *((image->pixels + (x + (y * image->width)) * 3) + 1) = color->green;
+    *((image->pixels + (x + (y * image->width)) * 3) + 2) = color->blue;
+
+    return 0;
+}
+
+int pixmap_image_get_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB *color) 
+{
+    if(!color)
+        return -1;
+    if((x < 0) || (x > image->width - 1))
+        return -1;
+    if((y < 0) || (y > image->height - 1))
+        return -1;
+
     u8 *first_color_component = image->pixels + (x + (y * image->width)) * 3;
     color->red = *first_color_component;
     color->green = *(first_color_component + 1);
     color->blue = *(first_color_component + 2);
+
+    return 0;
 }
 
 
