@@ -24,8 +24,8 @@ int test2()
     if(!image)
         return -1;
 
-    if(!(pixmap_image_width(image) == TEST_IMAGE_WIDTH &&
-         pixmap_image_height(image) == TEST_IMAGE_HEIGHT) &&
+    if(!(pixmap_image_get_width(image) == TEST_IMAGE_WIDTH &&
+         pixmap_image_get_height(image) == TEST_IMAGE_HEIGHT) &&
          pixmap_image_max_color_value(image) == TEST_IMAGE_MAX_COLOR_VALUE)
         return -1;
 

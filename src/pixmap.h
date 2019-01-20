@@ -24,8 +24,8 @@ void pixmap_image_free           (PixMapImage  *image);
 
 void pixmap_image_open           (PixMapImage **image, char const *file_path);
 
-u32  pixmap_image_width          (PixMapImage  *image);
-u32  pixmap_image_height         (PixMapImage  *image);
+u32  pixmap_image_get_width      (PixMapImage  *image);
+u32  pixmap_image_get_height     (PixMapImage  *image);
 u32  pixmap_image_max_color_value(PixMapImage  *image);
 
 int  pixmap_image_set_all_pixels (PixMapImage  *image, u8 *new_pixels, int new_pixels_count);

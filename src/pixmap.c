@@ -142,12 +142,12 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
     *image = new_image;
 }
 
-u32 pixmap_image_width(PixMapImage *image)
+u32 pixmap_image_get_width(PixMapImage *image)
 {
     return image->width;
 }
 
-u32 pixmap_image_height(PixMapImage *image)
+u32 pixmap_image_get_height(PixMapImage *image)
 {
     return image->height;
 }
