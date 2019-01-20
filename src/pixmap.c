@@ -14,6 +14,8 @@ struct PixMapImage
 
 static i32 pixmap_image_read_number(FILE *file, u32 *output);
 
+static void pixmap_image_copy_u8(u8 *destination, u8 const *source, int count);
+
 void pixmap_image_new(PixMapImage **image, u32 width, u32 height)
 {
     PixMapImage *new_image = 0;
@@ -155,6 +157,15 @@ u32 pixmap_image_max_color_value(PixMapImage *image)
     return image->maximum_color_value;
 }
 
+int pixmap_image_set_all_pixels(PixMapImage *image, u8 *new_pixels, int new_pixels_count)
+{
+    if((image->width * image->height) < new_pixels_count)
+        return -1;
+
+    pixmap_image_copy_u8(image->pixels, new_pixels, new_pixels_count);
+    return 0;
+}
+
 u8 *pixmap_image_get_all_pixels(PixMapImage *image)
 {
     return image->pixels;
@@ -186,6 +197,16 @@ static i32 pixmap_image_read_number(FILE *file, u32 *output)
     }
 
     return -1;
+}
+
+static void pixmap_image_copy_u8(u8 *destination, u8 const *source, int count)
+{
+    int i = 0;
+    while(i < count)
+    {
+        destination[i] = source[i];
+        i++;
+    }
 }
 
 int pixmap_image_set_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB const *color)
@@ -220,5 +241,4 @@ int pixmap_image_get_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB *color)
 
     return 0;
 }
-
 

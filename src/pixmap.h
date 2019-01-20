@@ -28,6 +28,7 @@ u32  pixmap_image_width          (PixMapImage  *image);
 u32  pixmap_image_height         (PixMapImage  *image);
 u32  pixmap_image_max_color_value(PixMapImage  *image);
 
+int  pixmap_image_set_all_pixels (PixMapImage  *image, u8 *new_pixels, int new_pixels_count);
 u8  *pixmap_image_get_all_pixels (PixMapImage  *image);
 
 int pixmap_image_set_pixel      (PixMapImage  *image, u32 x, u32 y, PixMapRGB const *color);

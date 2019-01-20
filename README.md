@@ -1,4 +1,36 @@
 # PixMap library in C
-Libpixmap is a library to read and write pixmap image formats with a simple to use API.
 
-Currently, libpixmap is going under a total rewrite. This is because I have grown my skills and confidence in C. Now I have a better idea of how to structure my code and the API. The API previously for libpixmap was not satisfactory and not to my liking. Hopefully, under this refactoring, libpixmap will have better code.
+## What is libpixmap?
+
+Libpixmap is a library written in pure C that aims to provide an easy and convient API for reading and writing PPM files.
+
+Features:
+
+* Open PPM images
+* Create new blank PPM images
+* Set and retrieve color values for specific pixels
+* Set and get all pixels
+
+## Quick Start
+
+This library is by design very simple. Only a header and source file. Include the header and add the source file to the list of files to build.
+
+Example:
+
+```cpp
+// main.c
+#include "pixmap.h"
+
+int main()
+{
+    // Code
+}
+```
+
+Compile with clang:
+
+```
+clang -o program main.c pixmap.c
+```
+
+Of course, if you use a build system like Make or a generator like that of CMake, then simply add pixmap.c to all the other files to be built.
