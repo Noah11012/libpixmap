@@ -162,7 +162,7 @@ int pixmap_image_set_all_pixels(PixMapImage *image, u8 *new_pixels, int new_pixe
     if((image->width * image->height) < new_pixels_count)
         return -1;
 
-    pixmap_image_copy_u8(image->pixels, new_pixels, new_pixels_count);
+    pixmap_image_copy_u8(image->pixels, new_pixels, new_pixels_count * 3);
     return 0;
 }
 
