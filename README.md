@@ -13,6 +13,16 @@ Features:
 
 ## Quick Start
 
+Libpixmap can be used two ways: with and without clibs.
+
+### With Clibs
+
+[Clibs](https://github.com/clibs/clib) is a package manager for small C libraries. To install with Clibs, use the following command:
+
+`clib install Noah11012/libpixmap`
+
+### Without Clibs
+
 This library is by design very simple. Only a header and source file. Include the header and add the source file to the list of files to build.
 
 Example:

@@ -1,0 +1,10 @@
+{
+    "name": "libpixmap",
+    "src": [
+        "src/pixmap.h",
+        "src/pixmap.c"
+    ],
+
+    "description": "An easy to use library to read and write PPM (Portable Pix Map) images.",
+    "repo": "Noah11012/libpixmap"
+}
