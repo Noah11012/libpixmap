@@ -50,6 +50,10 @@ int main(void)
     new_pixel.blue = 200;
 
     pixmap_image_set_pixel(image, 100, 100, &new_pixel);
+
+    // Clean up
+
+    pixmap_image_free(image);
 }
 ```
 
