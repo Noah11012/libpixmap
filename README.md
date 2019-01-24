@@ -11,6 +11,48 @@ Features:
 * Set and retrieve color values for specific pixels
 * Set and get all pixels
 
+## Example
+
+```cpp
+#include <stdio.h>
+#include "pixmap.h"
+
+int main(void)
+{
+    PixMapImage *image;
+    pixmap_image_open(&image, "path/to/image.ppm");
+
+    if(!image)
+    {
+        printf("Error: failed to open image!\n");
+        return 1;
+    }
+
+    printf("Image width: %d\n", pixmap_image_get_width(image));
+    printf("Image height: %d\n", pixmap_image_get_height(image));
+
+    // Retrieve individual pixels
+
+    PixMapRGB pixel;
+
+    // Returns -1 if the coordinates supplied are out of bounds
+    pixmap_image_get_pixel(image, 100, 100, &pixel);
+
+    printf("Red: %d\n", pixel.red);
+    printf("Green: %d\n", pixel.green);
+    printf("Blue: %d\n", pixel.blue);
+
+    // Set individual pixels
+
+    PixMapRGB new_pixel;
+    new_pixel.red = 50;
+    new_pixel.green = 150;
+    new_pixel.blue = 200;
+
+    pixmap_image_set_pixel(image, 100, 100, &new_pixel);
+}
+```
+
 ## Quick Start
 
 Libpixmap can be used two ways: with and without clibs.
@@ -23,7 +65,7 @@ Libpixmap can be used two ways: with and without clibs.
 
 ### Without Clibs
 
-This library is by design very simple. Only a header and source file. Include the header and add the source file to the list of files to build.
+This library is by design very simple. Only a header and a source file. Include the header and add the source file to the list of files to build.
 
 Example:
 

@@ -63,7 +63,6 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
     }
 
     // The first two bytes in the file MUST be P3
-    // Later, we will support P6
     
     u8 signature[2] = { 0 };
     fread(signature, sizeof(u8), 2, file);
@@ -77,9 +76,6 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
     // skip over newline character after P3
 
     fseek(file, 1, SEEK_CUR);
-
-    // PPM images allow for comments virtually ANYWHERE in the file
-    // We have to keep this in mind
 
     u32 image_width = 0;
     u32 image_height = 0;
@@ -122,7 +118,7 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
         return;
     }
 
-    if(!(new_image->pixels = malloc((sizeof(u8) * 30 * 20 * 3))))
+    if(!(new_image->pixels = malloc((sizeof(u8) * image_width * image_height * 3))))
     {
         fclose(file);
         free(new_image);
@@ -141,6 +137,39 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
             new_image->pixels[pixel_array_index++] = color;
 
     *image = new_image;
+}
+
+int pixmap_image_set_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB const *color)
+{
+    if(!color)
+        return -1;
+    if((x < 0) || (x > image->width - 1))
+        return -1;
+    if((y < 0) || (y > image->height - 1))
+        return -1;
+
+    *(image->pixels + (x + (y * image->width)) * 3) = color->red;
+    *((image->pixels + (x + (y * image->width)) * 3) + 1) = color->green;
+    *((image->pixels + (x + (y * image->width)) * 3) + 2) = color->blue;
+
+    return 0;
+}
+
+int pixmap_image_get_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB *color) 
+{
+    if(!color)
+        return -1;
+    if((x < 0) || (x > image->width - 1))
+        return -1;
+    if((y < 0) || (y > image->height - 1))
+        return -1;
+
+    u8 *first_color_component = image->pixels + (x + (y * image->width)) * 3;
+    color->red = *first_color_component;
+    color->green = *(first_color_component + 1);
+    color->blue = *(first_color_component + 2);
+
+    return 0;
 }
 
 u32 pixmap_image_get_width(PixMapImage *image)
@@ -212,37 +241,3 @@ static void pixmap_image_copy_u8(u8 *destination, u8 const *source, int count)
         i++;
     }
 }
-
-int pixmap_image_set_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB const *color)
-{
-    if(!color)
-        return -1;
-    if((x < 0) || (x > image->width - 1))
-        return -1;
-    if((y < 0) || (y > image->height - 1))
-        return -1;
-
-    *(image->pixels + (x + (y * image->width)) * 3) = color->red;
-    *((image->pixels + (x + (y * image->width)) * 3) + 1) = color->green;
-    *((image->pixels + (x + (y * image->width)) * 3) + 2) = color->blue;
-
-    return 0;
-}
-
-int pixmap_image_get_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB *color) 
-{
-    if(!color)
-        return -1;
-    if((x < 0) || (x > image->width - 1))
-        return -1;
-    if((y < 0) || (y > image->height - 1))
-        return -1;
-
-    u8 *first_color_component = image->pixels + (x + (y * image->width)) * 3;
-    color->red = *first_color_component;
-    color->green = *(first_color_component + 1);
-    color->blue = *(first_color_component + 2);
-
-    return 0;
-}
-
