@@ -11,6 +11,7 @@ struct PixMapImage
 
 // parses a number from a file and *output is filled with the result
 // returns 0 if file can still be processed and -1 when EOF is reached
+// or an error has occurred. 
 
 static i32 pixmap_image_read_number(FILE *file, u32 *output);
 
@@ -174,6 +175,8 @@ u8 *pixmap_image_get_all_pixels(PixMapImage *image)
 static i32 pixmap_image_read_number(FILE *file, u32 *output)
 {
     i32 c = 0;
+    // pixmap images can have comments. if the symbol `#` is encountered, fast foward until
+    // it reaches a newline and resets the flag.
     u32 is_comment = 0;
     u32 number = 0;
     while((c = fgetc(file)) != EOF)
@@ -183,6 +186,7 @@ static i32 pixmap_image_read_number(FILE *file, u32 *output)
         
         if(c == '#')
             is_comment = 1;
+
         if(is_comment)
             continue;
 
