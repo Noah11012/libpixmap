@@ -7,7 +7,7 @@ Libpixmap is a library written in pure C that aims to provide an easy and convie
 Features:
 
 * Open PPM images
-* Create new blank PPM images
+* Create blank PPM images
 * Set and retrieve color values for specific pixels
 * Set and get all pixels
 
