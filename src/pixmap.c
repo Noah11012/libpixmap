@@ -205,14 +205,11 @@ static i32 pixmap_image_read_number(FILE *file, u32 *output)
 {
     i32 c = 0;
     // pixmap images can have comments. if the symbol `#` is encountered, fast foward until
-    // it reaches a newline and resets the flag.
+    // it reaches a newline and reset the flag.
     u32 is_comment = 0;
     u32 number = 0;
     while((c = fgetc(file)) != EOF)
     {
-        if(ferror(file))
-            return -1;
-        
         if(c == '#')
             is_comment = 1;
 
