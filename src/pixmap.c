@@ -2,11 +2,11 @@
 
 struct PixMapImage
 {
-    FILE *image_file;
-    u8   *pixels;
-    u32   width;
-    u32   height;
-    u32   maximum_color_value;
+    char const *file_path;
+    u8         *pixels;
+    u32         width;
+    u32         height;
+    u32         maximum_color;
 };
 
 // parses a number from a file and *output is filled with the result
@@ -17,7 +17,7 @@ static i32 pixmap_image_read_number(FILE *file, u32 *output);
 
 static void pixmap_image_copy_u8(u8 *destination, u8 const *source, int count);
 
-void pixmap_image_new(PixMapImage **image, u32 width, u32 height)
+void pixmap_image_new(PixMapImage **image, char const *name, u32 width, u32 height)
 {
     PixMapImage *new_image = 0;
     if(!(new_image = malloc(sizeof(PixMapImage))))
@@ -36,13 +36,12 @@ void pixmap_image_new(PixMapImage **image, u32 width, u32 height)
         return;
     }
 
-    new_image->image_file = 0;
+    new_image->file_path = name;
     *image = new_image;
 }
 
 void pixmap_image_free(PixMapImage *image)
 {
-    fclose(image->image_file);
     free(image->pixels);
     free(image);
 }
@@ -79,9 +78,9 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
 
     u32 image_width = 0;
     u32 image_height = 0;
-    u32 image_maximum_color_value = 0;
+    u32 image_maximum_color = 0;
 
-    // Extract width, height and the maximum color value first
+    // Extract width, height and maximum color first
     
     // width
     
@@ -101,9 +100,9 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
         return;
     }
 
-    // maximum color value
-    
-    if(pixmap_image_read_number(file, &image_maximum_color_value) == -1)
+    // maximum color
+
+    if(pixmap_image_read_number(file, &image_maximum_color) == -1)
     {
         fclose(file);
         *image = 0;
@@ -118,7 +117,7 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
         return;
     }
 
-    if(!(new_image->pixels = malloc((sizeof(u8) * image_width * image_height * 3))))
+    if(!(new_image->pixels = malloc((sizeof(u8) * image_width * image_height * 3) + 1)))
     {
         fclose(file);
         free(new_image);
@@ -128,15 +127,42 @@ void pixmap_image_open(PixMapImage **image, char const *file_path)
 
     new_image->width = image_width;
     new_image->height = image_height;
+    new_image->maximum_color = image_maximum_color;
+    new_image->file_path = file_path;
     
     // pixels
-    
+
     u32 color = 0;
     u32 pixel_array_index = 0;
     while((pixmap_image_read_number(file, &color) != -1))
-            new_image->pixels[pixel_array_index++] = color;
+        new_image->pixels[pixel_array_index++] = color;
 
     *image = new_image;
+}
+
+int pixmap_image_save(PixMapImage *image)
+{
+    FILE *file = 0;
+    if(!(file = fopen(image->file_path, "w")))
+        return 0;
+
+    // write header to PPM file
+
+    fprintf(file, "%s\n%d %d\n%d\n", "P3",
+                                     image->width,
+                                     image->height,
+                                     image->maximum_color);
+
+    int i = 0;
+    while(i < (image->width * image->height * 3))
+    {
+        fprintf(file, "%d\n", image->pixels[i]);
+        i++;
+    }
+
+    fflush(file);
+    fclose(file);
+    return 0;
 }
 
 int pixmap_image_set_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB const *color)
@@ -148,9 +174,10 @@ int pixmap_image_set_pixel(PixMapImage *image, u32 x, u32 y, PixMapRGB const *co
     if((y < 0) || (y > image->height - 1))
         return -1;
 
-    *(image->pixels + (x + (y * image->width)) * 3) = color->red;
-    *((image->pixels + (x + (y * image->width)) * 3) + 1) = color->green;
-    *((image->pixels + (x + (y * image->width)) * 3) + 2) = color->blue;
+    u8 *first_color_component = (image->pixels + (x + (y * image->width)) * 3);
+    *first_color_component = color->red;
+    *(first_color_component + 1) = color->green;
+    *(first_color_component + 2) = color->blue;
 
     return 0;
 }
@@ -182,11 +209,6 @@ u32 pixmap_image_get_height(PixMapImage *image)
     return image->height;
 }
 
-u32 pixmap_image_max_color_value(PixMapImage *image)
-{
-    return image->maximum_color_value;
-}
-
 int pixmap_image_set_all_pixels(PixMapImage *image, u8 *new_pixels, int new_pixels_count)
 {
     if((image->width * image->height) < new_pixels_count)
@@ -215,6 +237,8 @@ static i32 pixmap_image_read_number(FILE *file, u32 *output)
     {
         if(c == '#')
             is_comment = 1;
+        else if(c == '\n')
+            is_comment = 0;
 
         if(is_comment)
             continue;
