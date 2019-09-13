@@ -28,8 +28,8 @@ int main(void)
         return 1;
     }
 
-    printf("Image width: %d\n", pixmap_image_get_width(image));
-    printf("Image height: %d\n", pixmap_image_get_height(image));
+    printf("Image width: %d\n", image->width);
+    printf("Image height: %d\n", image->height);
 
     // Retrieve individual pixels
 
