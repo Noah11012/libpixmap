@@ -21,9 +21,9 @@ struct
 
 struct
 {
-    unsigned char red;
-    unsigned char green;
-    unsigned char blue;
+    u8 red;
+    u8 green;
+    u8 blue;
 } typedef PixMapRGB;
 
 void pixmap_image_new            (PixMapImage **image, char const *name, u32 width, u32 height);
